@@ -24,7 +24,7 @@ import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 import android.view.Display;
 
-public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener,IOnAreaTouchListener
+public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
 {
 
 	static int CAMERA_WIDTH;
@@ -40,7 +40,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	
 	public static Sprite backGround, backGround2;
 	public static Sprite sprite1, sprite2, sprite3, sprite4;
-	public static Sprite mo;
 	
 	public static MainActivity MainActivityInstace;
 	public static VertexBufferObjectManager vertexBufferObjectManager;
@@ -78,7 +77,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				this.getTextureManager(), 1600, 1200);
 
 		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas, this, "JungleBG.png");
+				.createFromAsset(this.mBitmapTextureAtlas, this, "writingLayout.png");
 		mbackGround2TextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this, "JungleBG.png");
 		
@@ -92,7 +91,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mSprite3TextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this, "mo.png");
 		mSprite4TextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas1, this, "akar.png");
+				.createFromAsset(this.mBitmapTextureAtlas1, this, "chalk.png");
 
 		try 
 		{
@@ -131,18 +130,19 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		backGround.setWidth(CAMERA_WIDTH);
 		mScene.attachChild(backGround);
 		
-		sprite1 = new Sprite(CAMERA_WIDTH , MainActivity.CAMERA_HEIGHT / 18, MainActivity.mSprite1TextureRegion,
+		sprite1 = new Sprite(CAMERA_WIDTH -300, MainActivity.CAMERA_HEIGHT / 18, MainActivity.mSprite1TextureRegion,
 				MainActivity.vertexBufferObjectManager); 
 		mScene.registerTouchArea(sprite1);
 		mScene.attachChild(sprite1);
+		sprite1.setVisible(false);
 		
-		sprite2 = new Sprite(MainActivity.CAMERA_WIDTH +100,MainActivity.CAMERA_HEIGHT / 18, MainActivity.mSprite2TextureRegion,
+		sprite2 = new Sprite(MainActivity.CAMERA_WIDTH -700,MainActivity.CAMERA_HEIGHT / 18, MainActivity.mSprite2TextureRegion,
 				MainActivity.vertexBufferObjectManager); 
 		mScene.registerTouchArea(sprite2);
 		mScene.attachChild(sprite2);
+		sprite2.setVisible(false);
 		
 		mScene.setOnSceneTouchListener(this);
-		mScene.setOnAreaTouchListener(this);
 		
 		return mScene;
 	}
@@ -154,23 +154,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	}
 
 	@Override
-	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,ITouchArea pTouchArea, float pTouchAreaLocalX,float pTouchAreaLocalY) 
-	{
-		// TODO Auto-generated method stub
-		if (pSceneTouchEvent.isActionMove()) 
-		{
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent ) 
 	{
 		// TODO Auto-generated method stub
 		  if(pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove())
 		  {
 			  DrawImage(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+			  
+			  if(sprite4.collidesWith(sprite1))
+			  {
+				  Debug.d("Collision1");
+			  }
+			  else if(sprite4.collidesWith(sprite2))
+			  {
+				  Debug.d("Collision2");
+			  }
 			  return true;
           }
           return false;
