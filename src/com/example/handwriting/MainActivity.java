@@ -44,7 +44,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static MainActivity MainActivityInstace;
 	public static VertexBufferObjectManager vertexBufferObjectManager;
 	
-	public static boolean moFalg = false, moFalg1 = false;;
+	public static int Flag1, Flag2, Flag3 ,Flag4 ,Flag5, Flag6, Flag7, Flag8, Flag9, Flag10;
 	
 	Rectangle rectangle1, rectangle2, rectangle3, rectangle4, rectangle5, rectangle6, rectangle7, 
 	rectangle8, rectangle9, rectangle10;
@@ -53,8 +53,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	{
 		return MainActivityInstace; 
 	}
-	
-	//private PhysicsWorld mPhysicsWorld;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
@@ -132,10 +130,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mScene = new Scene();
 		mScene.setBackground(new Background(Color.WHITE));
 		
-//		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
-//		this.mScene.registerUpdateHandler(this.mPhysicsWorld);
-		
-		
 		vertexBufferObjectManager = getVertexBufferObjectManager();
 		
 		backGround = new Sprite(0, 0, mbackGroundTextureRegion, getVertexBufferObjectManager());
@@ -168,22 +162,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mScene.setOnSceneTouchListener(this);
 
-//		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-//		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-//		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-//		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-//
-//		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.0f, 0.5f);
-//		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
-//		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
-//		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
-//		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
-//
-//		this.mScene.attachChild(ground);
-//		this.mScene.attachChild(roof);
-//		this.mScene.attachChild(left);
-//		this.mScene.attachChild(right);
-		
 		boolean reveal = false;
 		float thick = 3;
 		float width = moOutLine.getWidth();
@@ -241,20 +219,39 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		  {
 			  DrawImage(pSceneTouchEvent.getX()-25, pSceneTouchEvent.getY()-30);
 			  
-			  if(sprite4.collidesWith(rectangle1) || sprite4.collidesWith(rectangle2)|| 
-				 sprite4.collidesWith(rectangle3) || sprite4.collidesWith(rectangle4)||
-				 sprite4.collidesWith(rectangle5) || sprite4.collidesWith(rectangle6)||
-				 sprite4.collidesWith(rectangle7) || sprite4.collidesWith(rectangle8)||
-				 sprite4.collidesWith(rectangle9) || sprite4.collidesWith(rectangle10)
-				 )
+			  if(sprite4.collidesWith(rectangle1))
+			  {  
+				  Flag1 = 1;
+			  }
+			  else if(Flag1 == 1 && sprite4.collidesWith(rectangle2))
 			  {
-				  Debug.d("Collision1");
-				  moFalg = true;
+				  Flag1 = 1;
+				  Flag2 = 1;
+			  }
+			  else if(Flag2 == 1 && sprite4.collidesWith(rectangle3))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+			  } 
+			  else if(Flag3 == 1 && sprite4.collidesWith(rectangle4))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1;
+			  }
+			  else if(Flag4 == 1 && sprite4.collidesWith(rectangle5))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1;
+				  Flag5 = 1;
 			  }
 			  else
 			  { 
 				  mScene.detachChild(sprite4);
-				  moFalg = false;
 			  }
 			  
 				
@@ -271,11 +268,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				MainActivity.vertexBufferObjectManager);
 		mScene.attachChild(sprite4);
 		sprite4.setScale((float) 0.3);
-		
-//		sprite3 = new Sprite(x+sprite4.getWidth()/2, y, MainActivity.mSprite3TextureRegion,
-//				MainActivity.vertexBufferObjectManager); 
-//		mScene.attachChild(sprite3);
-//		sprite3.setScale((float) 0.5);
 	}
 
 }
