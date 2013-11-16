@@ -26,28 +26,30 @@ import android.view.Display;
 
 public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
 {
-
 	static int CAMERA_WIDTH;
 	static int CAMERA_HEIGHT;
 	public Camera mCamera;
 	public static Scene mScene;
 	
 	private BuildableBitmapTextureAtlas mBitmapTextureAtlas, mBitmapTextureAtlas1;
-	public static ITextureRegion mBlackBoardTextureRegion, mMoOutLineTextureRegion;
+	public static ITextureRegion mBlackBoardTextureRegion, mMoOutLineTextureRegion, mPieceChalkTextureRegion; 
 	public static ITextureRegion mSprite1TextureRegion, mSprite2TextureRegion, mSprite3TextureRegion, mSprite4TextureRegion;
 	
 	public static ITextureRegion mbackGroundTextureRegion, mbackGround2TextureRegion;
 	
-	public static Sprite backGround, backGround2, blackBoard, moOutLine;
+	public static Sprite backGround, blackBoard, moOutLine;
 	public static Sprite sprite1, sprite2, sprite3, sprite4;
+	public static Chalk pieceChalk;
 	
 	public static MainActivity MainActivityInstace;
 	public static VertexBufferObjectManager vertexBufferObjectManager;
 	
 	public static int Flag1, Flag2, Flag3 ,Flag4 ,Flag5, Flag6, Flag7, Flag8, Flag9, Flag10;
 	
-	Rectangle rectangle1, rectangle2, rectangle3, rectangle4, rectangle5, rectangle6, rectangle7, 
+	public static Rectangle rectangle1, rectangle2, rectangle3, rectangle4, rectangle5, rectangle6, rectangle7, 
 	rectangle8, rectangle9, rectangle10;
+	
+	public static float touchPositionX , touchPositionY;
 	
 	public static MainActivity getSharedInstances()
 	{
@@ -82,8 +84,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 
 		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas, this, "JungleBG.png");
-		mbackGround2TextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas1, this, "moOutlineCrop.png");
+		
+		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas, this, "pieceChalk.png");
 		
 		mBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this, "moOutlineCrop.png"); 
@@ -141,35 +144,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		float moOutLineY = CAMERA_HEIGHT/2 - 130 ;
 		
 		moOutLine = new Sprite(moOutLineX, moOutLineY, mMoOutLineTextureRegion, getVertexBufferObjectManager());
-//		moOutLine.setHeight(CAMERA_HEIGHT/2);
-//		moOutLine.setWidth(CAMERA_WIDTH/2);
 		mScene.attachChild(moOutLine);
-		//moOutLine.setScale((float) 0.7);
-		
-//		sprite1 = new Sprite(CAMERA_WIDTH - 550, MainActivity.CAMERA_HEIGHT / 18 + 15, MainActivity.mSprite1TextureRegion,
-//				MainActivity.vertexBufferObjectManager); 
-//		mScene.registerTouchArea(sprite1);
-//		mScene.attachChild(sprite1);
-//		sprite1.setScale((float) 0.4);
-//		//sprite1.setVisible(false);
-//		
-//		sprite2 = new Sprite(MainActivity.CAMERA_WIDTH - 400, MainActivity.CAMERA_HEIGHT / 18 + 15, MainActivity.mSprite2TextureRegion,
-//				MainActivity.vertexBufferObjectManager); 
-//		mScene.registerTouchArea(sprite2);
-//		mScene.attachChild(sprite2);
-//		sprite2.setScale((float) 0.4);
-//		//sprite2.setVisible(false);
 		
 		mScene.setOnSceneTouchListener(this);
-
+		
 		boolean reveal = false;
 		float thick = 3;
 		float width = moOutLine.getWidth();
 		float height = moOutLine.getWidth();
-		Debug.d("mo.x:"+moOutLineX);//270
-		Debug.d("mo.y:"+moOutLineY);//86
-		Debug.d("mo.width:"+width );//127
-		//cam.wid/2 = 216
 		
 		rectangle1 = Structure( moOutLineX, moOutLineY + 13, width, thick, 0, reveal);
 		
@@ -191,6 +173,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		rectangle10 = Structure( moOutLineX + 200, moOutLineY + 5, thick, height, 180, reveal);
 		
+		touchPositionX = rectangle1.getX(); 
+		touchPositionY = rectangle1.getY();   
+		
+		pieceChalk = new Chalk(touchPositionX, touchPositionY, mPieceChalkTextureRegion, getVertexBufferObjectManager());
+		mScene.attachChild(pieceChalk);
+		pieceChalk.setScale((float) 0.8);
+		
 		return mScene;
 	}
 	
@@ -199,7 +188,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		Rectangle rect = new Rectangle(x, d, w, h, vertexBufferObjectManager);
 		rect.setColor(Color.BLUE);
 		rect.setRotation(rotate);
-		rect.setVisible(reveal);
+		rect.setVisible(reveal); 
 		mScene.attachChild(rect);
 		
 		return rect;
@@ -217,6 +206,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		// TODO Auto-generated method stub
 		  if(pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove())
 		  {
+			  pieceChalk.setPosition(pSceneTouchEvent.getX()- pieceChalk.getWidth()/2,
+					  pSceneTouchEvent.getY()- pieceChalk.getHeight()/2- 35);
+			  
 			  DrawImage(pSceneTouchEvent.getX()-25, pSceneTouchEvent.getY()-30);
 			  
 			  if(sprite4.collidesWith(rectangle1))
@@ -233,7 +225,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				  Flag1 = 1;
 				  Flag2 = 1;
 				  Flag3 = 1;
-			  } 
+			  }  
 			  else if(Flag3 == 1 && sprite4.collidesWith(rectangle4))
 			  {
 				  Flag1 = 1;
@@ -249,15 +241,140 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				  Flag4 = 1;
 				  Flag5 = 1;
 			  }
+			  else if(Flag5 == 1 && sprite4.collidesWith(rectangle6))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1;
+				  Flag5 = 1;
+				  Flag6 = 1;
+			  }
+			  else if(Flag6 == 1 && sprite4.collidesWith(rectangle7))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1;
+				  Flag5 = 1;
+				  Flag6 = 1;
+				  Flag7 = 1;
+			  }
+			  else if(Flag7 == 1 && sprite4.collidesWith(rectangle8))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1;
+				  Flag5 = 1;
+				  Flag6 = 1;
+				  Flag7 = 1;
+				  Flag8 = 1;
+			  }
+			  else if(Flag8 == 1 && sprite4.collidesWith(rectangle9))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1;
+				  Flag5 = 1;
+				  Flag6 = 1;
+				  Flag7 = 1;
+				  Flag8 = 1;
+				  Flag9 = 1;
+			  }
+			  else if(Flag9 == 1 && sprite4.collidesWith(rectangle10))
+			  {
+				  Flag1 = 1;
+				  Flag2 = 1;
+				  Flag3 = 1;
+				  Flag4 = 1; 
+				  Flag5 = 1;
+				  Flag6 = 1;
+				  Flag7 = 1;
+				  Flag8 = 1;
+				  Flag9 = 1;
+				  Flag10 = 1;
+			  }
+			  else if(Flag10 == 1)
+			  {
+//				  Flag1 = 0;
+//				  Flag2 = 0;
+//				  Flag3 = 0;
+//				  Flag4 = 0; 
+//				  Flag5 = 0;
+//				  Flag6 = 0;
+//				  Flag7 = 0;
+//				  Flag8 = 0;
+//				  Flag9 = 0;  
+//				  Flag10 = 0;
+			  }
 			  else
 			  { 
-				  mScene.detachChild(sprite4);
+				  mScene.detachChild(sprite4); 
 			  }
 			  
-				
+			  	
 			  return true;
           }
-          return false;
+		  if(pSceneTouchEvent.isActionUp())
+		  {
+		 	  if(sprite4.collidesWith(rectangle1))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		 	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag1 == 1 && sprite4.collidesWith(rectangle2))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag2 == 1 && sprite4.collidesWith(rectangle3))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag3 == 1 && sprite4.collidesWith(rectangle4))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	 else if(Flag4 == 1 && sprite4.collidesWith(rectangle5))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag5 == 1 && sprite4.collidesWith(rectangle6))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag6 == 1 && sprite4.collidesWith(rectangle7))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag7 == 1 && sprite4.collidesWith(rectangle8))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag8 == 1 && sprite4.collidesWith(rectangle9))
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+		 	  else if(Flag9 == 1 && sprite4.collidesWith(rectangle10)) 
+			  {
+		 		  	touchPositionX = pSceneTouchEvent.getX();
+		 		  	touchPositionY = pSceneTouchEvent.getY();
+			  }
+			  else
+			  {
+					Chalk.chalkPath(touchPositionX, touchPositionY);
+			  }
+		  }
+          return true;
 	}
 	
 	
@@ -268,6 +385,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				MainActivity.vertexBufferObjectManager);
 		mScene.attachChild(sprite4);
 		sprite4.setScale((float) 0.3);
+		
 	}
 
 }
