@@ -174,15 +174,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			public void onTimePassed(TimerHandler pTimerHandler) 
 			{
 				// TODO Auto-generated method stub 
-//				if(!(pieceChalk.getX()>=0))
-//				{
-//					Debug.d("chalk.x nan");
-//					//Chalk 
-//					pieceChalk = new Chalk(200,200,
-//							mPieceChalkTextureRegion, getVertexBufferObjectManager());
-//					mScene.attachChild(pieceChalk);
-//					pieceChalk.setScale((float) 0.8);
-//				}
 				//When there is no interaction with the device, play the animation
 				if(touch == 0)
 				{

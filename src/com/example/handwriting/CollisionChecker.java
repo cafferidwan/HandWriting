@@ -251,8 +251,11 @@ public class CollisionChecker
 			MainActivity.drawLine = 7; 
 			loop(39, a, b);
 			
-			MainActivity.Flag1[39] = 0;
-			MainActivity.Flag1[40] = 0;
+			for(int i = 0; i<40; i++)
+			{
+				MainActivity.Flag1[i] = 0;
+			}
+			MainActivity.drawLine = 1;
 			MainActivity.mScene.unregisterUpdateHandler(MainActivity.timer1);
 			Intent intent = MainActivity.MainActivityInstace.getIntent();
 			MainActivity.MainActivityInstace.finish();
