@@ -110,7 +110,7 @@ public class AnimationHandler
 		MainActivity.whiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
 				MainActivity.vertexBufferObjectManager);
 		MainActivity.mScene.attachChild(MainActivity.whiteChalk);
-		MainActivity.whiteChalk.setScale((float) 0.3);
+		MainActivity.whiteChalk.setScale((float) 0.4);   
 	}
 	
 	public static void animatedChalk(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,

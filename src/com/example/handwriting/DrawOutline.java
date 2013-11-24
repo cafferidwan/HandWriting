@@ -17,12 +17,6 @@ public class DrawOutline
 				MainActivity.touchPositionX = MainActivity.rectangle1[1].getX();
 				MainActivity.touchPositionY = MainActivity.rectangle1[1].getY(); 
 
-				//Chalk 
-				MainActivity.pieceChalk = new Chalk(200,200,
-						MainActivity.mPieceChalkTextureRegion, MainActivity.MainActivityInstace.getVertexBufferObjectManager());
-				MainActivity.mScene.attachChild(MainActivity.pieceChalk);
-				//pieceChalk.setScale((float) 0.8);
-				
 				//2nd line
 				for(int i=9; i<17; i++)
 				{

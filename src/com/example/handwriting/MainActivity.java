@@ -1,5 +1,7 @@
 package com.example.handwriting;
 
+import java.util.ArrayList;
+
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -24,6 +26,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
+import android.util.Log;
 import android.view.Display;
 
 public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
@@ -37,7 +40,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			mBitmapTextureAtlas1;
 	public static ITextureRegion mBlackBoardTextureRegion,
 			mMoOutLineTextureRegion, mPieceChalkTextureRegion;
-	public static ITextureRegion mSprite4TextureRegion;
+	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion;
 	public static ITextureRegion mbackGroundTextureRegion,
 			mbackGround2TextureRegion;
 
@@ -53,6 +56,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	
 	public static Rectangle rectangle1[] = new Rectangle[500];
 	public static int Flag1[] = new int[500];
+	public static Sprite star [] = new Sprite[500];
 
 	public static float touchPositionX;
 	public static float touchPositionY;
@@ -103,7 +107,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 
 		mBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this,
-						"moOutlineCrop.png");
+						"blackboard.png");
 
 		mMoOutLineTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this,
@@ -112,6 +116,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mSprite4TextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this,
 						"chalk2.png");
+		
+		mStarTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas1, this,
+						"star.png");
 
 		try 
 		{
@@ -154,26 +162,47 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 
 		moOutLineX = CAMERA_WIDTH / 2 - 130;
 		moOutLineY = CAMERA_HEIGHT / 2 - 130;
+		
+		blackBoard = new Sprite(moOutLineX-160, moOutLineY-58, mBlackBoardTextureRegion,
+				getVertexBufferObjectManager());
+		blackBoard.setHeight((float) (blackBoard.getHeight()*1.5));
+		blackBoard.setWidth((float) (blackBoard.getWidth()*1.5));
+		mScene.attachChild(blackBoard);
+		
 
 		moOutLine = new Sprite(moOutLineX, moOutLineY, mMoOutLineTextureRegion,
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
 		
-
-		reveal = false; 
+		reveal = false;  
 		thick = 3;
 		width = moOutLine.getWidth()/10;
 		
 		//Draw Outline
 		DrawOutline.Draw();
 		
+		Stars.createStars();
+		
+		//Chalk 
+		MainActivity.pieceChalk = new Chalk(MainActivity.moOutLineX -10, MainActivity.moOutLineY -80,
+				MainActivity.mPieceChalkTextureRegion, MainActivity.MainActivityInstace.getVertexBufferObjectManager());
+		MainActivity.mScene.attachChild(MainActivity.pieceChalk);
+		//pieceChalk.setScale((float) 0.8);
+		
 		timer1 = new TimerHandler((float) 1.0f/120,true, new ITimerCallback() 
 		{
-			
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) 
-			{
+			{ 
 				// TODO Auto-generated method stub 
+				if(!(pieceChalk.getX()>=0))
+				{
+					Debug.d("chalk create");
+					MainActivity.pieceChalk = new Chalk(MainActivity.moOutLineX -10, MainActivity.moOutLineY -80,
+							MainActivity.mPieceChalkTextureRegion, MainActivity.MainActivityInstace.getVertexBufferObjectManager());
+					MainActivity.mScene.attachChild(MainActivity.pieceChalk);
+				}
+				
 				//When there is no interaction with the device, play the animation
 				if(touch == 0)
 				{
@@ -203,12 +232,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		{
 			//The touch is enabled
 			touch = 1;
+			
 			//For piece chalk to be dragged within letter mo range
-			if(pSceneTouchEvent.getX()> moOutLine.getX() && 
-					pSceneTouchEvent.getX()< moOutLine.getX()+moOutLine.getWidth() &&
-					pSceneTouchEvent.getY()> moOutLine.getY() && 
-					pSceneTouchEvent.getY()< moOutLine.getY()+moOutLine.getHeight())
+			if((pSceneTouchEvent.getX()> moOutLine.getX() && 
+					pSceneTouchEvent.getX()< moOutLine.getX()+moOutLine.getWidth()) &&
+					(pSceneTouchEvent.getY()> moOutLine.getY() && 
+					pSceneTouchEvent.getY()< moOutLine.getY()+moOutLine.getHeight()))
 			{
+				//Debug.d("YEEEESSSSS");
 				pieceChalk.setPosition(
 						pSceneTouchEvent.getX() - pieceChalk.getWidth() / 2,
 						pSceneTouchEvent.getY() - pieceChalk.getHeight() / 2 - 35);
@@ -216,8 +247,27 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			else
 			{
 				//Do nothing
+				//Debug.d("NOOOOOOOO");
 			}
-			
+			if(pSceneTouchEvent.isActionMove())
+			{
+				if(whiteChalk != null)
+				{
+					for(int i=1; i<4; i++)
+					{
+						if(whiteChalk.collidesWith(star[i]))
+						{
+							Debug.d("It has been collided");
+							mScene.detachChild(star[i]); 
+						}
+						else
+						{
+							
+						}
+					}
+				}
+				
+			}
 			//For drawing white chalk
 			AnimationHandler.DrawImage(pSceneTouchEvent.getX() - 25, 
 					pSceneTouchEvent.getY() - 30);

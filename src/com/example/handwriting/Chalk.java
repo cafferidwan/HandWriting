@@ -1,7 +1,6 @@
 package com.example.handwriting;
 
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
