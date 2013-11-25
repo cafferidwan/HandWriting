@@ -174,7 +174,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
 		
-		reveal = true;  
+		reveal = false;  
 		thick = 3;
 		width = moOutLine.getWidth()/10;
 		
