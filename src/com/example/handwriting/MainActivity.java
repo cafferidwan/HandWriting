@@ -1,7 +1,5 @@
 package com.example.handwriting;
 
-import java.util.ArrayList;
-
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -26,14 +24,14 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
-import android.util.Log;
+import android.media.MediaPlayer;
 import android.view.Display;
 
 public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
 {
 	static int CAMERA_WIDTH;
 	static int CAMERA_HEIGHT;
-	public Camera mCamera;
+	public Camera mCamera;   
 	public static Scene mScene;
 
 	private BuildableBitmapTextureAtlas mBitmapTextureAtlas,
@@ -68,6 +66,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static int touch, drawLine = 0;
 	public static float moOutLineX, moOutLineY, width, thick;
 	public static boolean reveal;
+	static Boolean audioPlay = false;
+	static MediaPlayer mediaPlayer = new MediaPlayer();
 
 	@Override
 	public EngineOptions onCreateEngineOptions() 
@@ -174,7 +174,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
 		
-		reveal = false;  
+		reveal = true;  
 		thick = 3;
 		width = moOutLine.getWidth()/10;
 		
@@ -212,6 +212,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				{
 					pieceChalk.clearEntityModifiers();
 				}
+				
+				//Continuing the star collision
+				if(Stars.num != 0)
+				{
+					Stars.starCol(Stars.num);
+				}
 			}
 		});
 		mScene.registerUpdateHandler(timer1);
@@ -228,7 +234,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent)
 	{
 		// TODO Auto-generated method stub
-		if (pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove())
+		if (pSceneTouchEvent.isActionDown() )
 		{
 			//The touch is enabled
 			touch = 1;
@@ -239,53 +245,78 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					(pSceneTouchEvent.getY()> moOutLine.getY() && 
 					pSceneTouchEvent.getY()< moOutLine.getY()+moOutLine.getHeight()))
 			{
-				//Debug.d("YEEEESSSSS");
 				pieceChalk.setPosition(
 						pSceneTouchEvent.getX() - pieceChalk.getWidth() / 2,
 						pSceneTouchEvent.getY() - pieceChalk.getHeight() / 2 - 35);
 			}
-			else
+
+			return true;
+		} 
+		else if (pSceneTouchEvent.isActionMove())
+		{
+			touch = 1;
+			//For piece chalk to be dragged within letter mo range 
+			if((pSceneTouchEvent.getX()> moOutLine.getX() && 
+					pSceneTouchEvent.getX()< moOutLine.getX()+moOutLine.getWidth()) &&
+					(pSceneTouchEvent.getY()> moOutLine.getY() && 
+					pSceneTouchEvent.getY()< moOutLine.getY()+moOutLine.getHeight()))
 			{
-				//Do nothing
-				//Debug.d("NOOOOOOOO");
-			}
-			if(pSceneTouchEvent.isActionMove())
-			{
-				if(whiteChalk != null)
-				{
-					for(int i=1; i<4; i++)
-					{
-						if(whiteChalk.collidesWith(star[i]))
-						{
-							Debug.d("It has been collided");
-							mScene.detachChild(star[i]); 
-						}
-						else
-						{
-							
-						}
-					}
-				}
-				
+				pieceChalk.setPosition(
+						pSceneTouchEvent.getX() - pieceChalk.getWidth() / 2,
+						pSceneTouchEvent.getY() - pieceChalk.getHeight() / 2 - 35);
 			}
 			//For drawing white chalk
 			AnimationHandler.DrawImage(pSceneTouchEvent.getX() - 25, 
 					pSceneTouchEvent.getY() - 30);
 			//One by one Collision checker
 			CollisionChecker.collisionCheck(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
-
-			return true;
-		}
-		if (pSceneTouchEvent.isActionUp() || pSceneTouchEvent.isActionMove()) 
-		{
-			if(pSceneTouchEvent.isActionUp())
-			{
-				//The touch is disabled
-				touch = 0;
-			}
 			//get the position
 			Position.getPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+			
+			if(whiteChalk.collidesWith(star[1]) && CollisionChecker.val !=0)
+			{
+				//play sound
+				MainActivity.audioPlay = true;
+				MainActivity.playAudio(R.raw.star);
+				
+				mScene.detachChild(star[1]); 
+				MainActivity.star[1].setPosition(MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT);
+				Stars.num=1; 
+			}
+			
+			return true;
+		}
+		else if (pSceneTouchEvent.isActionUp()) 
+		{
+				//The touch is disabled
+				touch = 0;
 		}
 		return true;
+	}  
+	
+	//Audio play Function
+	public static void playAudio(int val)
+	{
+		if(audioPlay)
+		{
+//			if(!mediaPlayer.isPlaying())
+//			{
+//				mediaPlayer.reset();
+				mediaPlayer = MediaPlayer.create(MainActivityInstace.getBaseContext(), val);
+					
+				try 
+				{
+					mediaPlayer.start();
+					mediaPlayer.setLooping(false);
+				} 
+				catch (IllegalStateException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+//			}
+			audioPlay = true;
+		}
 	}
+
 }

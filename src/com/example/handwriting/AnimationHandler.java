@@ -105,10 +105,10 @@ public class AnimationHandler
 	}
 	
 	public static void DrawImage(float x, float y)
-	{
+	{ 
 		// TODO Auto-generated method stub
 		MainActivity.whiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
-				MainActivity.vertexBufferObjectManager);
+				MainActivity.vertexBufferObjectManager); 
 		MainActivity.mScene.attachChild(MainActivity.whiteChalk);
 		MainActivity.whiteChalk.setScale((float) 0.4);   
 	}

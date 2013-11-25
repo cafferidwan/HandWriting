@@ -33,13 +33,8 @@ public final class R {
         public static final int main=0x7f080000;
     }
     public static final class raw {
-        public static final int shape_5=0x7f040000;
-        public static final int shape_circle_2=0x7f040001;
-        public static final int shape_flower=0x7f040002;
-        public static final int shape_heart=0x7f040003;
-        public static final int shape_star=0x7f040004;
-        public static final int shape_star_2=0x7f040005;
-        public static final int shape_star_3=0x7f040006;
+        public static final int lettercomplete=0x7f040000;
+        public static final int star=0x7f040001;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;

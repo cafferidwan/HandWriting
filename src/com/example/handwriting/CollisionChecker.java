@@ -4,7 +4,9 @@ import android.content.Intent;
 
 public class CollisionChecker 
 {
-
+	
+	static int val ;
+	
 	public static void collisionCheck(float a, float b)
 	{
 		if (MainActivity.Flag1[1] == 1 && MainActivity.whiteChalk.collidesWith(MainActivity.rectangle1[1])) 
@@ -264,6 +266,7 @@ public class CollisionChecker
 		else 
 		{
 			MainActivity.mScene.detachChild(MainActivity.whiteChalk);
+			val = 0;
 		}
 
 	}
@@ -273,6 +276,7 @@ public class CollisionChecker
 	{
 		for(int i=1; i<a; i++)
 		{
+			val = 1;
 			MainActivity.Flag1[i] = 0;
 			MainActivity.Flag1[a] = 1;
 			MainActivity.Flag1[a+1] = 1; 
