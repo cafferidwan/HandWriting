@@ -104,15 +104,6 @@ public class AnimationHandler
 		}
 	}
 	
-	public static void DrawImage(float x, float y)
-	{ 
-		// TODO Auto-generated method stub
-		MainActivity.whiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
-				MainActivity.vertexBufferObjectManager); 
-		MainActivity.mScene.attachChild(MainActivity.whiteChalk);
-		MainActivity.whiteChalk.setScale((float) 0.4);   
-	}
-	
 	public static void animatedChalk(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
 			float x5, float y5, float x6, float y6, float x7, float y7, float x8, float y8,float x9, float y9,
 			float x10, float y10)
