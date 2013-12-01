@@ -13,6 +13,7 @@ import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -59,15 +60,19 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static Scene mScene;
 	public ScreenCapture screenCapture;
 	private BuildableBitmapTextureAtlas mBitmapTextureAtlas,
-			mBitmapTextureAtlas1;
+			mBitmapTextureAtlas1, mBitmapTextureAtlas2;
 	public static ITextureRegion mBlackBoardTextureRegion,
-			mMoOutLineTextureRegion, mPieceChalkTextureRegion;
+			mMoOutLineTextureRegion, mPieceChalkTextureRegion, 
+			mShowScreenCaptureRegion, mCreatePopUpRegion,
+			mCorrectLetterRegion, mDrawnPictureRegion,
+			mCrossRegion;
 	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion;
 	public static ITextureRegion mbackGroundTextureRegion,
 			mbackGround2TextureRegion;
 
 	public static Sprite backGround, blackBoard, moOutLine;
-	public static Sprite whiteChalk;
+	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross;
+	public static PopUp showScreen;
 	public static Chalk pieceChalk;
 
 	public static MainActivity MainActivityInstace;
@@ -122,7 +127,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				this.getTextureManager(), 1600, 1200);
 		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
 				this.getTextureManager(), 1600, 1200);
-
+		mBitmapTextureAtlas2 = new BuildableBitmapTextureAtlas(
+				this.getTextureManager(), 1600, 1200);
+		
 		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas, this, "JungleBG.png");
 
@@ -145,6 +152,26 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mStarTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas1, this,
 						"star.png");
+		
+		mShowScreenCaptureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						"star.png");
+		
+		mCreatePopUpRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						"handwritingbook.png");
+		
+		mCorrectLetterRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						"moOutlineCrop.png");
+		
+		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						"moOutlineCrop.png");
+		
+		mCrossRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						"cross.png");
 
 		try 
 		{
@@ -157,11 +184,23 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		{
 			Debug.e(e);
 		}
+		
 		try 
 		{
 			mBitmapTextureAtlas1.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource,
 					BitmapTextureAtlas>(0, 0, 0));
 			mBitmapTextureAtlas1.load();
+		} 
+		catch (TextureAtlasBuilderException e) 
+		{
+			Debug.e(e);
+		}
+		
+		try 
+		{
+			mBitmapTextureAtlas2.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource,
+					BitmapTextureAtlas>(0, 0, 0));
+			mBitmapTextureAtlas2.load();
 		} 
 		catch (TextureAtlasBuilderException e) 
 		{
@@ -199,7 +238,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
 		
-		reveal = false;  
+		reveal = false;
 		thick = 3;
 		width = moOutLine.getWidth()/10;
 		
@@ -219,7 +258,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		{
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) 
-			{ 
+			{
 				// TODO Auto-generated method stub 
 				if(!(pieceChalk.getX()>=0))
 				{
@@ -240,6 +279,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					pieceChalk.clearEntityModifiers();
 				}
 				
+//				if(PopUp.drawingDisabler == 0)
+//				{
+//					if(whiteChalk!=null)
+//					{ 
+//						whiteChalk.setVisible(false);
+//						whiteChalk.setAlpha(0);
+//					}
+//				}
+				
 				//Continuing the star collision
 				if(Stars.num != 0)
 				{
@@ -250,6 +298,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mScene.registerUpdateHandler(timer1);
 		
 		mScene.setOnSceneTouchListener(this);
+		
+		showScreen = new PopUp(40, 400, mShowScreenCaptureRegion, getVertexBufferObjectManager());
+		mScene.registerTouchArea(showScreen);
+		mScene.attachChild(showScreen);
 		
 		return mScene;
 	}
@@ -279,6 +331,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						pSceneTouchEvent.getY() - pieceChalk.getHeight() / 2 - 35);
 			}
 			
+//			if(PopUp.popUpVal == 0)
+//			{
+//				PopUp.createPopUp(1);
+//			}
+			
 			return true;
 		} 
 		else if (pSceneTouchEvent.isActionMove())
@@ -287,9 +344,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			touch = 1;
 			
 			//For drawing white chalk
+			if(PopUp.drawingDisabler == 0)
+			{
 			DrawImage(pSceneTouchEvent.getX() - 25, 
 					pSceneTouchEvent.getY() - 30); 
-			
+			}
 			//For piece chalk to be dragged within letter mo range 
 			if((pSceneTouchEvent.getX()> moOutLine.getX() && 
 					pSceneTouchEvent.getX()< moOutLine.getX()+moOutLine.getWidth()) &&
@@ -381,8 +440,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		// TODO Auto-generated method stub
 		whiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
 				MainActivity.vertexBufferObjectManager); 
+		//whiteChalk.setVisible(false);
 		mScene.attachChild(MainActivity.whiteChalk);
-		whiteChalk.setScale((float) 0.4);   
+		whiteChalk.setScale((float) 0.4);
+		
+		
 		 
 	}
 	 
@@ -401,7 +463,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					@Override
 					public void run() 
 					{
-						Debug.d("Screenshot: " + pFilePath + " taken!");
+						//Debug.d("Screenshot: " + pFilePath + " taken!");
 					}
 				});
 			}
