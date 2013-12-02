@@ -1,9 +1,7 @@
 package com.example.handwriting;
 
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
@@ -34,10 +32,10 @@ public class PopUp extends Sprite
 			{
 			case TouchEvent.ACTION_DOWN:
 
-//				if(popUpVal != 1)
-//				{
+				if(drawingDisabler == 0)
+				{
 					createPopUp(0);
-//				}
+				}
 			break;
 			
 			case TouchEvent.ACTION_UP:
@@ -59,11 +57,10 @@ public class PopUp extends Sprite
 		{
 			en = new Entity(100, MainActivity.CAMERA_HEIGHT+100);
 			MainActivity.mScene.attachChild(en);
+			
 			createPopUpPath = new Path(2)
 			.to(100, MainActivity.CAMERA_HEIGHT+500).to(100, 100);
 			drawingDisabler = 1;
-//			MainActivity.mScene.unregisterTouchArea(MainActivity.pieceChalk);
-			//MainActivity.mScene.unregisterTouchArea(MainActivity.showScreen);
 
 		}
 		//Up to down
@@ -72,9 +69,6 @@ public class PopUp extends Sprite
 			createPopUpPath = new Path(2)
 			.to(100, 100).to(100, MainActivity.CAMERA_HEIGHT+500);
 			drawingDisabler = 0;
-			
-//			MainActivity.mScene.registerTouchArea(MainActivity.pieceChalk);
-			//MainActivity.mScene.registerTouchArea(MainActivity.showScreen);
 		}
 		
 		MainActivity.createPopUp = new Sprite(-500, -300, MainActivity.mCreatePopUpRegion,
@@ -86,7 +80,7 @@ public class PopUp extends Sprite
 				MainActivity.vertexBufferObjectManager);
 		en.attachChild(MainActivity.correctLetter);
 		
-		MainActivity.drawnPicture = new Sprite(200, 150, MainActivity.mDrawnPictureRegion,
+		MainActivity.drawnPicture = new Sprite(-80, 0, MainActivity.mDrawnPictureRegion,
 				MainActivity.vertexBufferObjectManager);
 		en.attachChild(MainActivity.drawnPicture);
 		

@@ -2,18 +2,13 @@ package com.example.handwriting;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.IntBuffer;
-
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -29,28 +24,15 @@ import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSourc
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.util.GLHelper;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
-import android.content.res.Resources.Theme;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.opengl.GLES20;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Display;
-import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
 {
@@ -59,8 +41,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public Camera mCamera;   
 	public static Scene mScene;
 	public ScreenCapture screenCapture;
-	private BuildableBitmapTextureAtlas mBitmapTextureAtlas,
-			mBitmapTextureAtlas1, mBitmapTextureAtlas2;
+	public static  BuildableBitmapTextureAtlas mBitmapTextureAtlas,
+			mBitmapTextureAtlas1;
+	public BuildableBitmapTextureAtlas mBitmapTextureAtlas2;
 	public static ITextureRegion mBlackBoardTextureRegion,
 			mMoOutLineTextureRegion, mPieceChalkTextureRegion, 
 			mShowScreenCaptureRegion, mCreatePopUpRegion,
@@ -131,31 +114,31 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				this.getTextureManager(), 1600, 1200);
 		
 		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas, this, "JungleBG.png");
+				.createFromAsset(MainActivity.mBitmapTextureAtlas, this, "JungleBG.png");
 
 		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
 						"pieceChalk.png");
 
 		mBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas1, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"blackboard.png");
 
 		mMoOutLineTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas1, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"moOutlineCrop.png");
 
 		mSprite4TextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas1, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"chalk2.png");
 		
 		mStarTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas1, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"star.png");
 		
 		mShowScreenCaptureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
-						"star.png");
+						"bookIcon.png");
 		
 		mCreatePopUpRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
@@ -165,13 +148,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
 						"moOutlineCrop.png");
 		
-		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
-						"moOutlineCrop.png");
+//		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
+//				.createFromAsset(this.mBitmapTextureAtlas2, this,
+//						"moOutlineCrop.png");
 		
 		mCrossRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
 						"cross.png");
+		
+		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						"moOutlineCrop.png");
 
 		try 
 		{
@@ -279,15 +266,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					pieceChalk.clearEntityModifiers();
 				}
 				
-//				if(PopUp.drawingDisabler == 0)
-//				{
-//					if(whiteChalk!=null)
-//					{ 
-//						whiteChalk.setVisible(false);
-//						whiteChalk.setAlpha(0);
-//					}
-//				}
-				
 				//Continuing the star collision
 				if(Stars.num != 0)
 				{
@@ -299,8 +277,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mScene.setOnSceneTouchListener(this);
 		
-		showScreen = new PopUp(40, 400, mShowScreenCaptureRegion, getVertexBufferObjectManager());
+		showScreen = new PopUp(40, 310, mShowScreenCaptureRegion, getVertexBufferObjectManager());
 		mScene.registerTouchArea(showScreen);
+		showScreen.setScale((float) 0.6);
 		mScene.attachChild(showScreen);
 		
 		return mScene;
@@ -360,8 +339,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						pSceneTouchEvent.getY() - pieceChalk.getHeight() / 2 - 35);
 			} 
 			
-			//One by one Collision checker
-			CollisionChecker.collisionCheck(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+			if(whiteChalk!= null) 
+			{
+				//One by one Collision checker
+				CollisionChecker.collisionCheck(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+			}
 			//get the position
 			Position.getPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
 			
@@ -453,7 +435,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 250;
 		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 100;
 		
-		screenCapture.capture(150, 50,viewWidth, viewHeight, Environment.getExternalStorageDirectory() + "/screen"+System.currentTimeMillis()+".jpg", new IScreenCaptureCallback() 
+		screenCapture.capture(150, 50, viewWidth, viewHeight, Environment.getExternalStorageDirectory() + 
+				"/screen"+System.currentTimeMillis()+".jpg", new IScreenCaptureCallback() 
 		{
 			@Override
 			public void onScreenCaptured(final String pFilePath) 
@@ -464,6 +447,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					public void run() 
 					{
 						//Debug.d("Screenshot: " + pFilePath + " taken!");
+						//setTextureRegion(screenCapture);
 					}
 				});
 			}
@@ -482,5 +466,19 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			}
 		});
 		
+	}
+	public void setTextureRegion(ScreenCapture screenCapture2)
+	{
+	    //this.mDrawnPictureRegion = textureRegion;
+		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(this.mBitmapTextureAtlas2, this,
+						 Environment.getExternalStorageDirectory() + 
+							"/screen"+System.currentTimeMillis()+".jpg");
+//		Bitmap bmImg = BitmapFactory.decodeFile( Environment.getExternalStorageDirectory() + 
+//				"/screen"+System.currentTimeMillis()+".jpg");
+
+//		BitmapTextureAtlas texture = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024);
+//		mBeanRegion = BitmapTextureAtlasTextureRegionFactory.createFromSource(texture, FileBitmapTextureAtlasSource.createFromInternalStorage(this, "bean.png", 0, 0), 0, 0);
+//		texture.load();
 	}
 }
