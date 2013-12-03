@@ -1,8 +1,5 @@
 package com.example.handwriting;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -24,14 +21,16 @@ import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSourc
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.FileUtils;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.os.Environment;
 import android.view.Display;
 
 public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
@@ -81,6 +80,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	static Boolean audioPlay = false;
 	static MediaPlayer mediaPlayer = new MediaPlayer();
 
+	static TextureRegion textureRegion;
+	static BitmapTextureAtlas texture;
+	static BitmapTextureAtlasSource source;
+	static int changeTexture = 0;
+	
+	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
 	{
@@ -148,10 +153,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
 						"moOutlineCrop.png");
 		
-//		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
-//				.createFromAsset(this.mBitmapTextureAtlas2, this,
-//						"moOutlineCrop.png");
-		
 		mCrossRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
 						"cross.png");
@@ -159,7 +160,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(this.mBitmapTextureAtlas2, this,
 						"moOutlineCrop.png");
-
+		
+		//new setTexture(Environment.getExternalStorageDirectory() + "/asd.jpg");
+		
 		try 
 		{
 			mBitmapTextureAtlas
@@ -310,11 +313,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						pSceneTouchEvent.getY() - pieceChalk.getHeight() / 2 - 35);
 			}
 			
-//			if(PopUp.popUpVal == 0)
-//			{
-//				PopUp.createPopUp(1);
-//			}
-			
 			return true;
 		} 
 		else if (pSceneTouchEvent.isActionMove())
@@ -343,11 +341,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			{
 				//One by one Collision checker
 				CollisionChecker.collisionCheck(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+				//get the position
+				Position.getPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
 			}
-			//get the position
-			Position.getPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
 			
-			if(whiteChalk.collidesWith(star[1]) && CollisionChecker.val !=0)
+			if( whiteChalk!=null && whiteChalk.collidesWith(star[1]) && CollisionChecker.val !=0)
 			{
 				//play sound
 				MainActivity.audioPlay = true;
@@ -378,24 +376,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		return true;
 	}  
 	
-	
-	public static void createImageFromBitmap(Bitmap bmp)
-    {
-    	ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-		File file = new File( Environment.getExternalStorageDirectory() + "/capturedscreen67.jpg");
-		try 
-		{
-			file.createNewFile();
-			FileOutputStream ostream = new FileOutputStream(file);
-			ostream.write(bytes.toByteArray());        
-			ostream.close();
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}    
-    }
 	//Audio play Function
 	public static void playAudio(int val)
 	{
@@ -427,7 +407,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		whiteChalk.setScale((float) 0.4);
 		
 		
-		 
+		  
 	}
 	 
 	public void screenShot()
@@ -435,8 +415,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 250;
 		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 100;
 		
-		screenCapture.capture(150, 50, viewWidth, viewHeight, Environment.getExternalStorageDirectory() + 
-				"/screen"+System.currentTimeMillis()+".jpg", new IScreenCaptureCallback() 
+		final float time = System.currentTimeMillis();
+		screenCapture.capture(150, 50, viewWidth, viewHeight,FileUtils.getAbsolutePathOnInternalStorage
+				(getApplicationContext(), "/screen"+ time +".jpg") , new IScreenCaptureCallback() 
 		{
 			@Override
 			public void onScreenCaptured(final String pFilePath) 
@@ -447,7 +428,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					public void run() 
 					{
 						//Debug.d("Screenshot: " + pFilePath + " taken!");
-						//setTextureRegion(screenCapture);
+						changeTexture = 1;
+						new setTexture(FileUtils.getAbsolutePathOnInternalStorage
+								(getApplicationContext(), "/screen"+ time +".jpg"));
 					}
 				});
 			}
@@ -460,25 +443,39 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					@Override
 					public void run() 
 					{
-						
+						changeTexture = 0;
 					}
 				});
 			}
 		});
+//		mScene.registerUpdateHandler(new TimerHandler((float) 0.5, new ITimerCallback() 
+//		{
+//			
+//			@Override
+//			public void onTimePassed(TimerHandler pTimerHandler) 
+//			{
+//				// TODO Auto-generated method stub
+////				source = null;
+////				texture.clearTextureAtlasSources();
+////				texture = null;
+////				new setTexture(Environment.getExternalStorageDirectory() + "/screen"+time+".jpg");
+//			} 
+//		}));
+	}
+	
+	public static class setTexture
+	{
+		public setTexture(String address)
+		{
+			//this.mDrawnPictureRegion = textureRegion;
+			source = new BitmapTextureAtlasSource(
+					BitmapFactory.decodeFile(address));
+			texture = new BitmapTextureAtlas(MainActivityInstace.getTextureManager(), 1000, 1000);
+			texture.addTextureAtlasSource(source, 0, 0);
+			texture.load();
+			textureRegion = (TextureRegion) TextureRegionFactory.createFromSource(texture, source, 0, 0);
+		}
 		
 	}
-	public void setTextureRegion(ScreenCapture screenCapture2)
-	{
-	    //this.mDrawnPictureRegion = textureRegion;
-		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
-						 Environment.getExternalStorageDirectory() + 
-							"/screen"+System.currentTimeMillis()+".jpg");
-//		Bitmap bmImg = BitmapFactory.decodeFile( Environment.getExternalStorageDirectory() + 
-//				"/screen"+System.currentTimeMillis()+".jpg");
-
-//		BitmapTextureAtlas texture = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024);
-//		mBeanRegion = BitmapTextureAtlasTextureRegionFactory.createFromSource(texture, FileBitmapTextureAtlasSource.createFromInternalStorage(this, "bean.png", 0, 0), 0, 0);
-//		texture.load();
-	}
+	
 }

@@ -78,12 +78,25 @@ public class PopUp extends Sprite
 		 
 		MainActivity.correctLetter = new Sprite(300, 0, MainActivity.mCorrectLetterRegion,
 				MainActivity.vertexBufferObjectManager);
-		en.attachChild(MainActivity.correctLetter);
+		en.attachChild(MainActivity.correctLetter); 
 		
-		MainActivity.drawnPicture = new Sprite(-80, 0, MainActivity.mDrawnPictureRegion,
-				MainActivity.vertexBufferObjectManager);
-		en.attachChild(MainActivity.drawnPicture);
-		
+		//If screen shot taken, then show screen shot image
+		if(MainActivity.changeTexture == 1)
+		{
+			MainActivity.drawnPicture = new Sprite(-130, -60, MainActivity.textureRegion,
+				MainActivity.vertexBufferObjectManager); 
+			MainActivity.drawnPicture.setScale((float) 0.6);
+			en.attachChild(MainActivity.drawnPicture);
+		}
+		//If no screen shot taken, then show normal image
+		else if(MainActivity.changeTexture == 0)
+		{
+			MainActivity.drawnPicture = new Sprite(-50, 0, MainActivity.mDrawnPictureRegion,
+					MainActivity.vertexBufferObjectManager);
+//				MainActivity.drawnPicture.setScale((float) 0.6);
+				en.attachChild(MainActivity.drawnPicture);
+		}
+			
 		MainActivity.cross = new Sprite(500, -100, MainActivity.mCrossRegion, MainActivity.vertexBufferObjectManager)
 		{
 			@Override
