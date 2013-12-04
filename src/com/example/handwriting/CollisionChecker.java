@@ -257,11 +257,9 @@ public class CollisionChecker
 			{
 				MainActivity.Flag1[i] = 0;
 			}
+			
 			MainActivity.drawLine = 1;
 			MainActivity.mScene.unregisterUpdateHandler(MainActivity.timer1);
-			Intent intent = MainActivity.MainActivityInstace.getIntent();
-			MainActivity.MainActivityInstace.finish();
-			MainActivity.MainActivityInstace.startActivity(intent); 
 		}  
 		else 
 		{
@@ -283,5 +281,12 @@ public class CollisionChecker
 			MainActivity.touchPositionX = x;
 			MainActivity.touchPositionY = y;
 		}
+	}
+	
+	public void finishActivity()
+	{
+		Intent intent = MainActivity.MainActivityInstace.getIntent();
+		MainActivity.MainActivityInstace.finish();
+		MainActivity.MainActivityInstace.startActivity(intent); 
 	}
 }

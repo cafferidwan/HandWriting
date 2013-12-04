@@ -14,6 +14,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.ScreenCapture;
 import org.andengine.entity.util.ScreenCapture.IScreenCaptureCallback;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
@@ -23,6 +24,7 @@ import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.FileUtils;
@@ -41,19 +43,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static Scene mScene;
 	public ScreenCapture screenCapture;
 	public static  BuildableBitmapTextureAtlas mBitmapTextureAtlas,
-			mBitmapTextureAtlas1;
-	public BuildableBitmapTextureAtlas mBitmapTextureAtlas2;
+			mBitmapTextureAtlas1, mBitmapTextureAtlas3;
 	public static ITextureRegion mBlackBoardTextureRegion,
-			mMoOutLineTextureRegion, mPieceChalkTextureRegion, 
+			mMoOutLineTextureRegion, mPopUpBlackBoardTextureRegion,
 			mShowScreenCaptureRegion, mCreatePopUpRegion,
 			mCorrectLetterRegion, mDrawnPictureRegion,
 			mCrossRegion;
 	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion;
-	public static ITextureRegion mbackGroundTextureRegion,
+	public static ITextureRegion mbackGroundTextureRegion, 
 			mbackGround2TextureRegion;
+	
+	public BitmapTextureAtlas mBitmapTextureAtlas2;
+	public static TiledTextureRegion mPieceChalkTextureRegion;
 
 	public static Sprite backGround, blackBoard, moOutLine;
-	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross;
+	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross, board;
 	public static PopUp showScreen;
 	public static Chalk pieceChalk;
 
@@ -80,19 +84,33 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	static Boolean audioPlay = false;
 	static MediaPlayer mediaPlayer = new MediaPlayer();
 
+	//Screen Shot texture
 	static TextureRegion textureRegion;
 	static BitmapTextureAtlas texture;
 	static BitmapTextureAtlasSource source;
 	static int changeTexture = 0;
 	
+	//Stars variables
+	static int num = 0, aCounter = 0;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
 	{
 		// TODO Auto-generated method stub
 		
+		//Initializing and clearing at every beginning of the game
 		Flag1[1] = 1;
 		Flag = 1;
+		
+		for(int i=2; i<40; i++)
+		{
+			Flag1[i] = 0;
+		}
+		source = null;
+		//texture.clearTextureAtlasSources();
+		texture = null;
+		changeTexture = 0;
+				
 		MainActivityInstace = this;
 		Display display = getWindowManager().getDefaultDisplay();
 		CAMERA_HEIGHT = display.getHeight();
@@ -112,19 +130,23 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.setAssetBasePath("HandWritingGfx/");
 
 		mBitmapTextureAtlas = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 1600, 1200);
+				this.getTextureManager(), 1600, 900);
 		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 1600, 1200);
-		mBitmapTextureAtlas2 = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 1600, 1200);
+				this.getTextureManager(), 2200, 1800);
+		mBitmapTextureAtlas3 = new BuildableBitmapTextureAtlas(
+				this.getTextureManager(), 2200, 1800);
+		mBitmapTextureAtlas2 = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
 		
 		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(MainActivity.mBitmapTextureAtlas, this, "JungleBG.png");
 
-		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
-						"pieceChalk.png");
-
+		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlas2, this,
+				"pieceChalk.png", 0, 0,  1, 1); 
+				
+		mPopUpBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
+						"board.png");
+		
 		mBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"blackboard.png");
@@ -142,33 +164,43 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						"star.png");
 		
 		mShowScreenCaptureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"bookIcon.png");
 		
 		mCreatePopUpRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"handwritingbook.png");
 		
 		mCorrectLetterRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"moOutlineCrop.png");
 		
 		mCrossRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"cross.png");
 		
 		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(this.mBitmapTextureAtlas2, this,
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"moOutlineCrop.png");
 		
-		//new setTexture(Environment.getExternalStorageDirectory() + "/asd.jpg");
+		mBitmapTextureAtlas2.load();
 		
 		try 
 		{
-			mBitmapTextureAtlas
-					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+			mBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
 							0, 0, 0));
 			mBitmapTextureAtlas.load();
+		} 
+		catch (TextureAtlasBuilderException e)
+		{
+			Debug.e(e);
+		}
+		
+		try 
+		{
+			mBitmapTextureAtlas3.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 0, 0));
+			mBitmapTextureAtlas3.load();
 		} 
 		catch (TextureAtlasBuilderException e)
 		{
@@ -185,18 +217,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		{
 			Debug.e(e);
 		}
-		
-		try 
-		{
-			mBitmapTextureAtlas2.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource,
-					BitmapTextureAtlas>(0, 0, 0));
-			mBitmapTextureAtlas2.load();
-		} 
-		catch (TextureAtlasBuilderException e) 
-		{
-			Debug.e(e);
-		}
-
 	}
 
 	@Override
@@ -235,6 +255,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		//Draw Outline
 		DrawOutline.Draw();
 		
+		//Create Stars
 		Stars.createStars();
 		
 		//Chalk 
@@ -270,9 +291,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				}
 				
 				//Continuing the star collision
-				if(Stars.num != 0)
+				if(num != 0)
 				{
-					Stars.starCol(Stars.num);
+					Stars.starCol(num);
 				}
 			}
 		});
@@ -353,18 +374,24 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				
 				mScene.detachChild(star[1]); 
 				MainActivity.star[1].setPosition(MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT);
-				Stars.num=1; 
+				num=1; 
 			} 
 			//Checking for the screenshot
-			if(Flag1[36]== 1)
+			if(Flag1[38]== 1)
 			{
 				screenCapture = new ScreenCapture();
 				mScene.attachChild(screenCapture);
+				
+				mScene.registerUpdateHandler(new TimerHandler((float)0.5, new ITimerCallback() 
+				{
+					@Override
+					public void onTimePassed(TimerHandler pTimerHandler)
+					{
+						// TODO Auto-generated method stub
+						screenShot();
+					}
+				}));
 			}
-			if(Flag1[38]== 1)
-			{
-				screenShot();
-			} 
 			
 			return true;
 		}
@@ -406,19 +433,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mScene.attachChild(MainActivity.whiteChalk);
 		whiteChalk.setScale((float) 0.4);
 		
-		
-		  
 	}
 	 
 	public void screenShot()
 	{
-		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 250;
-		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 100;
+		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 310;
+		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 80;
 		
-		final float time = System.currentTimeMillis();
-		screenCapture.capture(150, 50, viewWidth, viewHeight,FileUtils.getAbsolutePathOnInternalStorage
-				(getApplicationContext(), "/screen"+ time +".jpg") , new IScreenCaptureCallback() 
-		{
+		//final float time = System.currentTimeMillis();
+		screenCapture.capture(170, 30, viewWidth, viewHeight,FileUtils.getAbsolutePathOnInternalStorage
+				(getApplicationContext(), "/screen"+".jpg") , new IScreenCaptureCallback() 
+		{ 
 			@Override
 			public void onScreenCaptured(final String pFilePath) 
 			{
@@ -430,7 +455,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						//Debug.d("Screenshot: " + pFilePath + " taken!");
 						changeTexture = 1;
 						new setTexture(FileUtils.getAbsolutePathOnInternalStorage
-								(getApplicationContext(), "/screen"+ time +".jpg"));
+								(getApplicationContext(), "/screen"+".jpg"));
 					}
 				});
 			}
@@ -448,19 +473,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				});
 			}
 		});
-//		mScene.registerUpdateHandler(new TimerHandler((float) 0.5, new ITimerCallback() 
-//		{
-//			
-//			@Override
-//			public void onTimePassed(TimerHandler pTimerHandler) 
-//			{
-//				// TODO Auto-generated method stub
-////				source = null;
-////				texture.clearTextureAtlasSources();
-////				texture = null;
-////				new setTexture(Environment.getExternalStorageDirectory() + "/screen"+time+".jpg");
-//			} 
-//		}));
+
 	}
 	
 	public static class setTexture

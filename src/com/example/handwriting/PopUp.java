@@ -76,14 +76,20 @@ public class PopUp extends Sprite
 		MainActivity.createPopUp.setScale((float) 0.5);
 		en.attachChild(MainActivity.createPopUp);
 		 
-		MainActivity.correctLetter = new Sprite(300, 0, MainActivity.mCorrectLetterRegion,
+		MainActivity.board = new Sprite(180, -200, MainActivity.mPopUpBlackBoardTextureRegion,
 				MainActivity.vertexBufferObjectManager);
+		MainActivity.board.setScale((float) 0.6);
+		en.attachChild(MainActivity.board); 
+		
+		MainActivity.correctLetter = new Sprite(340, -60, MainActivity.mCorrectLetterRegion,
+				MainActivity.vertexBufferObjectManager);
+		MainActivity.correctLetter.setScale((float) 0.6);
 		en.attachChild(MainActivity.correctLetter); 
 		
 		//If screen shot taken, then show screen shot image
 		if(MainActivity.changeTexture == 1)
 		{
-			MainActivity.drawnPicture = new Sprite(-130, -60, MainActivity.textureRegion,
+			MainActivity.drawnPicture = new Sprite(-130, -100, MainActivity.textureRegion,
 				MainActivity.vertexBufferObjectManager); 
 			MainActivity.drawnPicture.setScale((float) 0.6);
 			en.attachChild(MainActivity.drawnPicture);
@@ -91,10 +97,10 @@ public class PopUp extends Sprite
 		//If no screen shot taken, then show normal image
 		else if(MainActivity.changeTexture == 0)
 		{
-			MainActivity.drawnPicture = new Sprite(-50, 0, MainActivity.mDrawnPictureRegion,
+			MainActivity.board = new Sprite(-180, -200, MainActivity.mPopUpBlackBoardTextureRegion,
 					MainActivity.vertexBufferObjectManager);
-//				MainActivity.drawnPicture.setScale((float) 0.6);
-				en.attachChild(MainActivity.drawnPicture);
+			MainActivity.board.setScale((float) 0.6);
+			en.attachChild(MainActivity.board); 
 		}
 			
 		MainActivity.cross = new Sprite(500, -100, MainActivity.mCrossRegion, MainActivity.vertexBufferObjectManager)
