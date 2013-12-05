@@ -48,7 +48,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			mMoOutLineTextureRegion, mPopUpBlackBoardTextureRegion,
 			mShowScreenCaptureRegion, mCreatePopUpRegion,
 			mCorrectLetterRegion, mDrawnPictureRegion,
-			mCrossRegion;
+			mCrossRegion, mMoExampleTextureRegion;
 	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion;
 	public static ITextureRegion mbackGroundTextureRegion, 
 			mbackGround2TextureRegion;
@@ -56,7 +56,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public BitmapTextureAtlas mBitmapTextureAtlas2;
 	public static TiledTextureRegion mPieceChalkTextureRegion;
 
-	public static Sprite backGround, blackBoard, moOutLine;
+	public static Sprite backGround, blackBoard, moOutLine, moExample;
 	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross, board;
 	public static PopUp showScreen;
 	public static Chalk pieceChalk;
@@ -132,7 +132,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mBitmapTextureAtlas = new BuildableBitmapTextureAtlas(
 				this.getTextureManager(), 1600, 900);
 		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 2200, 1800);
+				this.getTextureManager(), 2600, 2200);
 		mBitmapTextureAtlas3 = new BuildableBitmapTextureAtlas(
 				this.getTextureManager(), 2200, 1800);
 		mBitmapTextureAtlas2 = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
@@ -182,6 +182,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"moOutlineCrop.png");
+		
+		mMoExampleTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
+						"moExample.png");
 		
 		mBitmapTextureAtlas2.load();
 		
