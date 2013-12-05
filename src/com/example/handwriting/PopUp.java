@@ -89,7 +89,11 @@ public class PopUp extends Sprite
 		//If screen shot taken, then show screen shot image
 		if(MainActivity.changeTexture == 1)
 		{
-			MainActivity.drawnPicture = new Sprite(-130, -100, MainActivity.textureRegion,
+			MainActivity.board = new Sprite(-180, -200, MainActivity.mPopUpBlackBoardTextureRegion,
+					MainActivity.vertexBufferObjectManager);
+			MainActivity.board.setScale((float) 0.6);
+			en.attachChild(MainActivity.board); 
+			MainActivity.drawnPicture = new Sprite(-40, -68, MainActivity.textureRegion,
 				MainActivity.vertexBufferObjectManager); 
 			MainActivity.drawnPicture.setScale((float) 0.6);
 			en.attachChild(MainActivity.drawnPicture);
@@ -103,7 +107,7 @@ public class PopUp extends Sprite
 			en.attachChild(MainActivity.board); 
 		}
 			
-		MainActivity.cross = new Sprite(500, -100, MainActivity.mCrossRegion, MainActivity.vertexBufferObjectManager)
+		MainActivity.cross = new Sprite(530, -150, MainActivity.mCrossRegion, MainActivity.vertexBufferObjectManager)
 		{
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
@@ -126,7 +130,7 @@ public class PopUp extends Sprite
 			}
 		};
 		MainActivity.mScene.registerTouchArea(MainActivity.cross);
-		MainActivity.cross.setScale((float) 0.5);
+		MainActivity.cross.setScale((float) 0.3);
 		en.attachChild(MainActivity.cross);
 
 		en.registerEntityModifier(new PathModifier((float)1.3, createPopUpPath, null, new IPathModifierListener()

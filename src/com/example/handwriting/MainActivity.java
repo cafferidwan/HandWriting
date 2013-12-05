@@ -301,10 +301,22 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mScene.setOnSceneTouchListener(this);
 		
+		//Pop up window 
 		showScreen = new PopUp(40, 310, mShowScreenCaptureRegion, getVertexBufferObjectManager());
 		mScene.registerTouchArea(showScreen);
 		showScreen.setScale((float) 0.6);
 		mScene.attachChild(showScreen);
+		
+		AnimationHandler.animatedChalk(2, MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+				MainActivity.rectangle1[8].getX(), MainActivity.rectangle1[8].getY()+20, 
+				MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY(), 
+				MainActivity.rectangle1[17].getX(), MainActivity.rectangle1[17].getY(),
+				MainActivity.rectangle1[21].getX()+20, MainActivity.rectangle1[21].getY()+20,
+				MainActivity.rectangle1[24].getX(), MainActivity.rectangle1[24].getY()+60, 
+				MainActivity.rectangle1[28].getX()-30, MainActivity.rectangle1[28].getY()+20,
+				MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
+				MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20, 
+				MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
 		
 		return mScene;
 	}
@@ -437,11 +449,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	 
 	public void screenShot()
 	{
-		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 310;
-		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 80;
+		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 525;
+		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 165;
 		
 		//final float time = System.currentTimeMillis();
-		screenCapture.capture(170, 30, viewWidth, viewHeight,FileUtils.getAbsolutePathOnInternalStorage
+		screenCapture.capture(264, 80, viewWidth, viewHeight,FileUtils.getAbsolutePathOnInternalStorage
 				(getApplicationContext(), "/screen"+".jpg") , new IScreenCaptureCallback() 
 		{ 
 			@Override
