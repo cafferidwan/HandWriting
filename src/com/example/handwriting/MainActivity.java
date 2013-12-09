@@ -60,6 +60,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross, board;
 	public static PopUp showScreen;
 	public static Chalk pieceChalk;
+	public static Sprite tutorialWhiteChalk;
 
 	public static MainActivity MainActivityInstace;
 	public static VertexBufferObjectManager vertexBufferObjectManager;
@@ -92,6 +93,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	
 	//Stars variables
 	static int num = 0, aCounter = 0;
+	
+	static int animStart = 0;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
@@ -275,12 +278,25 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			public void onTimePassed(TimerHandler pTimerHandler) 
 			{
 				// TODO Auto-generated method stub 
+				
+				if(animStart == 1)
+				{
+					MainActivity.DrawImage2(MainActivity.pieceChalk.getX()+20 , MainActivity.pieceChalk.getY() + 50);
+				}
+				
+//				if(tutorialWhiteChalk!= null && AnimationHandler.j == 0) 
+//				{
+//					mScene.detachChild(tutorialWhiteChalk);
+//					//tutorialWhiteChalk.setVisible(false);
+//				}
+				
 				if(!(pieceChalk.getX()>=0))
 				{
 					Debug.d("chalk create");
 					MainActivity.pieceChalk = new Chalk(MainActivity.moOutLineX -10, MainActivity.moOutLineY -80,
 							MainActivity.mPieceChalkTextureRegion, MainActivity.MainActivityInstace.getVertexBufferObjectManager());
 					MainActivity.mScene.attachChild(MainActivity.pieceChalk);
+					pieceChalk.setScale((float) 0.7);
 				}
 				
 				//When there is no interaction with the device, play the animation
@@ -311,7 +327,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		showScreen.setScale((float) 0.6);
 		mScene.attachChild(showScreen);
 		
-		AnimationHandler.animatedChalk(2, MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+		AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
 				MainActivity.rectangle1[8].getX(), MainActivity.rectangle1[8].getY()+20, 
 				MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY(), 
 				MainActivity.rectangle1[17].getX(), MainActivity.rectangle1[17].getY(),
@@ -448,6 +464,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		//whiteChalk.setVisible(false);
 		mScene.attachChild(MainActivity.whiteChalk);
 		whiteChalk.setScale((float) 0.4);
+		
+	}
+	
+	public static void DrawImage2(float x, float y)
+	{ 
+		// TODO Auto-generated method stub
+		tutorialWhiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
+				MainActivity.vertexBufferObjectManager); 
+		//whiteChalk.setVisible(false);
+		mScene.attachChild(MainActivity.tutorialWhiteChalk);
+		tutorialWhiteChalk.setScale((float) 0.4);
 		
 	}
 	 
