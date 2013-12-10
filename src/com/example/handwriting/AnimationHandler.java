@@ -1,11 +1,9 @@
 package com.example.handwriting;
 
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.andengine.entity.modifier.PathModifier.Path;
-import org.andengine.util.debug.Debug;
 
 public class AnimationHandler 
 {
@@ -119,27 +117,25 @@ public class AnimationHandler
 		
 		j=1;
 		
-		MainActivity.pieceChalk.registerEntityModifier(new LoopEntityModifier(new PathModifier((float)3.5, chalkPath, null, new IPathModifierListener()
+		MainActivity.pieceChalk.registerEntityModifier(new PathModifier((float)3.5, chalkPath, null, new IPathModifierListener()
 		{
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) 
 			{
-				
 				//Debug.d("onPathStarted"); 
-				if(MainActivity.tutorialWhiteChalk!= null && MainActivity.tutorialWhiteChalk.collidesWith(MainActivity.tutorialWhiteChalk))
-				{
-//					mScene.detachChild(tutorialWhiteChalk);
-					i++;
-					Debug.d("I:"+i);
-				}
-				if(i<=1)
-				{
+//				if(MainActivity.tutorialWhiteChalk!= null && MainActivity.tutorialWhiteChalk.collidesWith(MainActivity.tutorialWhiteChalk))
+//				{
+//					i++;
+//					Debug.d("I:"+i);
+//				}
+//				if(i<=1)
+//				{
 					MainActivity.animStart = 1;
-				}
-				else
-				{
-					MainActivity.animStart = 0;
-				}
+//				}
+//				else
+//				{
+//					MainActivity.animStart = 0;
+//				}
 			}
 
 			@Override
@@ -160,7 +156,13 @@ public class AnimationHandler
 				MainActivity.drawLine = 9;
 				MainActivity.animStart = 0;
 				j = 0;
+				
+				for(int i=1; i<=MainActivity.counter; i++)
+				{
+					MainActivity.mScene.detachChild(MainActivity.tutorialWhiteChalk[i]);
+
+				}
 			}
-		})));
+		}));
 	}
 }

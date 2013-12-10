@@ -38,7 +38,7 @@ import android.view.Display;
 public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouchListener
 {
 	static int CAMERA_WIDTH;
-	static int CAMERA_HEIGHT;
+	static int CAMERA_HEIGHT; 
 	public Camera mCamera;   
 	public static Scene mScene;
 	public ScreenCapture screenCapture;
@@ -49,18 +49,18 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			mShowScreenCaptureRegion, mCreatePopUpRegion,
 			mCorrectLetterRegion, mDrawnPictureRegion,
 			mCrossRegion, mMoExampleTextureRegion;
-	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion;
+	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion, mTutorialTextureRegion;
 	public static ITextureRegion mbackGroundTextureRegion, 
 			mbackGround2TextureRegion;
 	
 	public BitmapTextureAtlas mBitmapTextureAtlas2;
 	public static TiledTextureRegion mPieceChalkTextureRegion;
 
-	public static Sprite backGround, blackBoard, moOutLine, moExample;
+	public static Sprite backGround, blackBoard, moOutLine, moExample, tutorial;
 	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross, board;
 	public static PopUp showScreen;
-	public static Chalk pieceChalk;
-	public static Sprite tutorialWhiteChalk;
+	public static Chalk pieceChalk; 
+	public static Sprite tutorialWhiteChalk[] =new Sprite[3000];
 
 	public static MainActivity MainActivityInstace;
 	public static VertexBufferObjectManager vertexBufferObjectManager;
@@ -94,7 +94,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	//Stars variables
 	static int num = 0, aCounter = 0;
 	
-	static int animStart = 0;
+	static int animStart = 0, counter = 0;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
@@ -133,7 +133,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.setAssetBasePath("HandWritingGfx/");
 
 		mBitmapTextureAtlas = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 1600, 900);
+				this.getTextureManager(), 1650, 950);
 		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
 				this.getTextureManager(), 2600, 2200);
 		mBitmapTextureAtlas3 = new BuildableBitmapTextureAtlas(
@@ -190,6 +190,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
 						"moExample.png");
 		
+		mTutorialTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
+						"star.png");
+		
 		mBitmapTextureAtlas2.load();
 		
 		try 
@@ -244,9 +248,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		moOutLineX = CAMERA_WIDTH / 2 - 130;
 		moOutLineY = CAMERA_HEIGHT / 2 - 130;
 		
-		blackBoard = new Sprite(moOutLineX-160, moOutLineY-58, mBlackBoardTextureRegion,
+		blackBoard = new Sprite(moOutLineX-160, moOutLineY-85, mBlackBoardTextureRegion,
 				getVertexBufferObjectManager());
-		blackBoard.setHeight((float) (blackBoard.getHeight()*1.5));
+		blackBoard.setHeight((float) (blackBoard.getHeight()*1.7));
 		blackBoard.setWidth((float) (blackBoard.getWidth()*1.5));
 		mScene.attachChild(blackBoard);
 		
@@ -254,6 +258,38 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		moOutLine = new Sprite(moOutLineX, moOutLineY, mMoOutLineTextureRegion,
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
+		
+		tutorial = new Sprite(moOutLineX + 440, moOutLineY, mTutorialTextureRegion,
+				getVertexBufferObjectManager())
+		{
+			@Override
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
+			{
+				switch (pSceneTouchEvent.getAction()) 
+				{
+				case TouchEvent.ACTION_DOWN:
+					AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+							MainActivity.rectangle1[8].getX(), MainActivity.rectangle1[8].getY()+20, 
+							MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY(), 
+							MainActivity.rectangle1[17].getX(), MainActivity.rectangle1[17].getY(),
+							MainActivity.rectangle1[21].getX()+20, MainActivity.rectangle1[21].getY()+20,
+							MainActivity.rectangle1[24].getX(), MainActivity.rectangle1[24].getY()+60, 
+							MainActivity.rectangle1[28].getX()-30, MainActivity.rectangle1[28].getY()+20,
+							MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
+							MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20, 
+							MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
+				break;
+				case TouchEvent.ACTION_UP:
+					
+				break;
+				}
+
+				return true;
+			}
+	
+		};
+		mScene.registerTouchArea(tutorial);
+		mScene.attachChild(tutorial);
 		
 		reveal = false;
 		thick = 3;
@@ -271,6 +307,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		MainActivity.mScene.attachChild(MainActivity.pieceChalk);
 		pieceChalk.setScale((float) 0.7);
 		
+//		mScene.registerUpdateHandler(new TimerHandler((float)0.08,true, new ITimerCallback() {
+//			
+//			@Override
+//			public void onTimePassed(TimerHandler pTimerHandler) {
+//				// TODO Auto-generated method stub
+//			}
+//		}));
 		
 		timer1 = new TimerHandler((float) 1.0f/120,true, new ITimerCallback() 
 		{
@@ -321,22 +364,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mScene.setOnSceneTouchListener(this);
 		
-		//Pop up window 
+		//Pop up window
 		showScreen = new PopUp(40, 310, mShowScreenCaptureRegion, getVertexBufferObjectManager());
 		mScene.registerTouchArea(showScreen);
 		showScreen.setScale((float) 0.6);
 		mScene.attachChild(showScreen);
-		
-		AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
-				MainActivity.rectangle1[8].getX(), MainActivity.rectangle1[8].getY()+20, 
-				MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY(), 
-				MainActivity.rectangle1[17].getX(), MainActivity.rectangle1[17].getY(),
-				MainActivity.rectangle1[21].getX()+20, MainActivity.rectangle1[21].getY()+20,
-				MainActivity.rectangle1[24].getX(), MainActivity.rectangle1[24].getY()+60, 
-				MainActivity.rectangle1[28].getX()-30, MainActivity.rectangle1[28].getY()+20,
-				MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
-				MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20, 
-				MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
 		
 		return mScene;
 	}
@@ -470,12 +502,14 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static void DrawImage2(float x, float y)
 	{ 
 		// TODO Auto-generated method stub
-		tutorialWhiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
+		counter++;
+		Debug.d("counter:"+counter);
+		tutorialWhiteChalk[counter] = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
 				MainActivity.vertexBufferObjectManager); 
+		Debug.d("counter:"+counter);
 		//whiteChalk.setVisible(false);
-		mScene.attachChild(MainActivity.tutorialWhiteChalk);
-		tutorialWhiteChalk.setScale((float) 0.4);
-		
+		mScene.attachChild(MainActivity.tutorialWhiteChalk[counter]);
+		tutorialWhiteChalk[counter].setScale((float) 0.4);
 	}
 	 
 	public void screenShot()
