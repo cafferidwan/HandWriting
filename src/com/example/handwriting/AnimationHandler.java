@@ -159,9 +159,10 @@ public class AnimationHandler
 				
 				for(int i=1; i<=MainActivity.counter; i++)
 				{
-					MainActivity.mScene.detachChild(MainActivity.tutorialWhiteChalk[i]);
-
+					MainActivity.tutorialWhiteChalk[i].setVisible(false);
+					MainActivity.tutorialWhiteChalk[i].setX(MainActivity.CAMERA_WIDTH + 300);
 				}
+				MainActivity.counter = 0;
 			}
 		}));
 	}

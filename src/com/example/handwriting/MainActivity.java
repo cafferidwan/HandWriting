@@ -261,23 +261,23 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		tutorial = new Sprite(moOutLineX + 440, moOutLineY, mTutorialTextureRegion,
 				getVertexBufferObjectManager())
-		{
+		{ 
 			@Override
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
 			{
-				switch (pSceneTouchEvent.getAction()) 
+				switch (pSceneTouchEvent.getAction() ) 
 				{
-				case TouchEvent.ACTION_DOWN:
-					AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
-							MainActivity.rectangle1[8].getX(), MainActivity.rectangle1[8].getY()+20, 
-							MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY(), 
-							MainActivity.rectangle1[17].getX(), MainActivity.rectangle1[17].getY(),
-							MainActivity.rectangle1[21].getX()+20, MainActivity.rectangle1[21].getY()+20,
-							MainActivity.rectangle1[24].getX(), MainActivity.rectangle1[24].getY()+60, 
-							MainActivity.rectangle1[28].getX()-30, MainActivity.rectangle1[28].getY()+20,
-							MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
-							MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20, 
-							MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
+				case TouchEvent.ACTION_DOWN :
+						AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+								MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20, 
+								MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY()+20, 
+								MainActivity.rectangle1[17].getX()+10, MainActivity.rectangle1[17].getY()+10,
+								MainActivity.rectangle1[21].getX()+30, MainActivity.rectangle1[21].getY()+20,
+								MainActivity.rectangle1[24].getX()+10, MainActivity.rectangle1[24].getY()+60, 
+								MainActivity.rectangle1[28].getX()-60, MainActivity.rectangle1[28].getY()+20,
+								MainActivity.rectangle1[30].getX()-10, MainActivity.rectangle1[30].getY()+20, 
+								MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
+								MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
 				break;
 				case TouchEvent.ACTION_UP:
 					
@@ -400,7 +400,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			
 			return true;
 		} 
-		else if (pSceneTouchEvent.isActionMove())
+		else if (pSceneTouchEvent.isActionMove() )
 		{
 			
 			touch = 1;
@@ -457,9 +457,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				}));
 			}
 			
-			return true;
+			return true; 
 		}
-		else if (pSceneTouchEvent.isActionUp()) 
+		else if (pSceneTouchEvent.isActionUp() ) 
 		{
 				//The touch is disabled
 				touch = 0;
