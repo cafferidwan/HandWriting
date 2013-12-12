@@ -15,7 +15,6 @@ public class PopUp extends Sprite
 {
 	
 	static IEntity en;
-	public static int popUpVal = 0, drawingDisabler = 0;
 	
 	public PopUp(int i, int j, ITextureRegion mShowScreenCaptureRegion,
 			VertexBufferObjectManager vertexBufferObjectManager) 
@@ -32,7 +31,7 @@ public class PopUp extends Sprite
 			{
 			case TouchEvent.ACTION_DOWN:
 
-				if(drawingDisabler == 0)
+				if(MainActivity.drawingDisabler == 0 && MainActivity.animStart == 0)
 				{
 					createPopUp(0);
 				}
@@ -43,13 +42,13 @@ public class PopUp extends Sprite
 			break;
 			
 			}
-
+ 
 			return true;
 		}
 
 	public static void createPopUp(int upDown)
 	{
-		popUpVal = upDown;
+		MainActivity.popUpVal = upDown;
 		Path createPopUpPath = null;
 		
 		//Down to up
@@ -60,7 +59,7 @@ public class PopUp extends Sprite
 			
 			createPopUpPath = new Path(2)
 			.to(100, MainActivity.CAMERA_HEIGHT+500).to(100, 100);
-			drawingDisabler = 1;
+			MainActivity.drawingDisabler = 1;
 
 		}
 		//Up to down
@@ -68,7 +67,7 @@ public class PopUp extends Sprite
 		{ 
 			createPopUpPath = new Path(2)
 			.to(100, 100).to(100, MainActivity.CAMERA_HEIGHT+500);
-			drawingDisabler = 0;
+			MainActivity.drawingDisabler = 0;
 		}
 		
 		MainActivity.createPopUp = new Sprite(-500, -300, MainActivity.mCreatePopUpRegion,

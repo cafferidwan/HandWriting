@@ -93,8 +93,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	
 	//Stars variables
 	static int num = 0, aCounter = 0;
-	
+	//Tutorial variables
 	static int animStart = 0, counter = 0;
+	
+	//Popup window variables
+	public static int popUpVal = 0, drawingDisabler = 0;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
@@ -266,8 +269,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
 			{
 				switch (pSceneTouchEvent.getAction() ) 
-				{
+				{ 
 				case TouchEvent.ACTION_DOWN :
+					if(animStart == 0 && drawingDisabler == 0)
+					{
 						AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
 								MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20, 
 								MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY()+20, 
@@ -278,6 +283,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 								MainActivity.rectangle1[30].getX()-10, MainActivity.rectangle1[30].getY()+20, 
 								MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
 								MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
+					}
 				break;
 				case TouchEvent.ACTION_UP:
 					
@@ -383,7 +389,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent)
 	{
 		// TODO Auto-generated method stub
-		if (pSceneTouchEvent.isActionDown() )
+		if (pSceneTouchEvent.isActionDown() && animStart == 0)
 		{
 			//The touch is enabled
 			touch = 1;
@@ -400,13 +406,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			
 			return true;
 		} 
-		else if (pSceneTouchEvent.isActionMove() )
+		else if (pSceneTouchEvent.isActionMove() && animStart == 0)
 		{
 			
 			touch = 1;
 			
 			//For drawing white chalk
-			if(PopUp.drawingDisabler == 0)
+			if(drawingDisabler == 0)
 			{
 			DrawImage(pSceneTouchEvent.getX() - 25, 
 					pSceneTouchEvent.getY() - 30); 
@@ -457,9 +463,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				}));
 			}
 			
-			return true; 
+			return true;  
 		}
-		else if (pSceneTouchEvent.isActionUp() ) 
+		else if (pSceneTouchEvent.isActionUp() && animStart == 0) 
 		{
 				//The touch is disabled
 				touch = 0;
@@ -473,7 +479,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		if(audioPlay)
 		{
 			mediaPlayer = MediaPlayer.create(MainActivityInstace.getBaseContext(), val);
-					
 			try 
 			{
 				mediaPlayer.start();
