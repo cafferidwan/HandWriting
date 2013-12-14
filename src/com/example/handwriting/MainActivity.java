@@ -50,7 +50,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			mCorrectLetterRegion, mDrawnPictureRegion,
 			mCrossRegion, mMoExampleTextureRegion;
 	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion, mTutorialTextureRegion;
-	public static ITextureRegion mbackGroundTextureRegion, 
+	public static ITextureRegion mbackGroundTextureRegion, mDusterTextureRegion, 
 			mbackGround2TextureRegion;
 	
 	public BitmapTextureAtlas mBitmapTextureAtlas2;
@@ -60,6 +60,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross, board;
 	public static PopUp showScreen;
 	public static Chalk pieceChalk; 
+	public static Duster duster;
 	public static Sprite tutorialWhiteChalk[] =new Sprite[3000];
 
 	public static MainActivity MainActivityInstace;
@@ -136,7 +137,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.setAssetBasePath("HandWritingGfx/");
 
 		mBitmapTextureAtlas = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 1650, 950);
+				this.getTextureManager(), 1700, 1000);
 		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
 				this.getTextureManager(), 2600, 2200);
 		mBitmapTextureAtlas3 = new BuildableBitmapTextureAtlas(
@@ -194,6 +195,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						"moExample.png");
 		
 		mTutorialTextureRegion = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
+						"star.png");
+		
+		mDusterTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
 						"star.png");
 		
@@ -262,6 +267,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
 		
+		duster = new Duster(CAMERA_WIDTH/2+100, 200, mDusterTextureRegion, vertexBufferObjectManager);
+		mScene.attachChild(duster);
+		
 		tutorial = new Sprite(moOutLineX + 440, moOutLineY, mTutorialTextureRegion,
 				getVertexBufferObjectManager())
 		{ 
@@ -273,16 +281,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				case TouchEvent.ACTION_DOWN :
 					if(animStart == 0 && drawingDisabler == 0)
 					{
-						AnimationHandler.animatedChalk(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
-								MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20, 
-								MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY()+20, 
-								MainActivity.rectangle1[17].getX()+10, MainActivity.rectangle1[17].getY()+10,
-								MainActivity.rectangle1[21].getX()+30, MainActivity.rectangle1[21].getY()+20,
-								MainActivity.rectangle1[24].getX()+10, MainActivity.rectangle1[24].getY()+60, 
-								MainActivity.rectangle1[28].getX()-60, MainActivity.rectangle1[28].getY()+20,
-								MainActivity.rectangle1[30].getX()-10, MainActivity.rectangle1[30].getY()+20, 
-								MainActivity.rectangle1[32].getX(), MainActivity.rectangle1[32].getY()+20, 
-								MainActivity.rectangle1[39].getX(), MainActivity.rectangle1[39].getY()+20);
+						AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+								MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
 					}
 				break;
 				case TouchEvent.ACTION_UP:
@@ -313,13 +313,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		MainActivity.mScene.attachChild(MainActivity.pieceChalk);
 		pieceChalk.setScale((float) 0.7);
 		
-//		mScene.registerUpdateHandler(new TimerHandler((float)0.08,true, new ITimerCallback() {
-//			
-//			@Override
-//			public void onTimePassed(TimerHandler pTimerHandler) {
-//				// TODO Auto-generated method stub
-//			}
-//		}));
+		mScene.registerUpdateHandler(new TimerHandler((float)3, new ITimerCallback() 
+		{
+			
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) 
+			{
+				// TODO Auto-generated method stub
+				if(animStart == 0 && drawingDisabler == 0)
+				{
+					
+					AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+							MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
+				}
+			}
+		}));
 		
 		timer1 = new TimerHandler((float) 1.0f/120,true, new ITimerCallback() 
 		{

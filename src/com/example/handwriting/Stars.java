@@ -97,11 +97,20 @@ public class Stars
 				MainActivity.star[MainActivity.num].setPosition(MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT);
 				Debug.d("n:"+MainActivity.num);
 				MainActivity.aCounter=0;
-			}
+			} 
+		}
+		else if(n == 17)
+		{
+			MainActivity.aCounter=0;
+			MainActivity.star[17].setVisible(false);
+			
+			//play the sound
+			MainActivity.audioPlay = true;
+			MainActivity.playAudio(R.raw.lettercompletesound);
 		}
 		else
 		{
-			//num = 0;
+//			num = 0;
 			MainActivity.aCounter=0;
 		}
 		

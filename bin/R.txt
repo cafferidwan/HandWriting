@@ -4,7 +4,7 @@ int drawable ic_launcher 0x7f020000
 int id action_settings 0x7f090000
 int layout activity_main 0x7f030000
 int menu main 0x7f080000
-int raw lettercomplete 0x7f040000
+int raw lettercompletesound 0x7f040000
 int raw star 0x7f040001
 int string action_settings 0x7f060001
 int string app_name 0x7f060000
