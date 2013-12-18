@@ -98,15 +98,19 @@ public class Stars
 				Debug.d("n:"+MainActivity.num);
 				MainActivity.aCounter=0;
 			} 
-		}
+		} 
 		else if(n == 17)
 		{
 			MainActivity.aCounter=0;
 			MainActivity.star[17].setVisible(false);
-			
+			n = 0;
+			MainActivity.num = 0;
 			//play the sound
 			MainActivity.audioPlay = true;
 			MainActivity.playAudio(R.raw.lettercompletesound);
+			
+			Duster.createDusterPopUp(1);
+			
 		}
 		else
 		{

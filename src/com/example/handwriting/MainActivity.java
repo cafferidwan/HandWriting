@@ -10,6 +10,7 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.ScreenCapture;
 import org.andengine.entity.util.ScreenCapture.IScreenCaptureCallback;
@@ -31,6 +32,7 @@ import org.andengine.util.FileUtils;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
+import android.R.anim;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.view.Display;
@@ -53,6 +55,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static ITextureRegion mbackGroundTextureRegion, mDusterTextureRegion, 
 			mbackGround2TextureRegion;
 	
+	private BuildableBitmapTextureAtlas mAnimatedBitmapTextureAtlas;
+	public TiledTextureRegion mMonkeyTextureRegion;
+	
 	public BitmapTextureAtlas mBitmapTextureAtlas2;
 	public static TiledTextureRegion mPieceChalkTextureRegion;
 
@@ -62,6 +67,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static Chalk pieceChalk; 
 	public static Duster duster;
 	public static Sprite tutorialWhiteChalk[] =new Sprite[3000];
+	
+	public static MonkeyTutorial monkeyTutorial;
 
 	public static MainActivity MainActivityInstace;
 	public static VertexBufferObjectManager vertexBufferObjectManager;
@@ -100,6 +107,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	//Popup window variables
 	public static int popUpVal = 0, drawingDisabler = 0;
 	
+	//Popup duster value
+	public static int popUpDuster = 0, dusterDisabler = 0;
+	
+	//
+	public static int noTouch = 0;
+	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
 	{
@@ -137,7 +150,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				.setAssetBasePath("HandWritingGfx/");
 
 		mBitmapTextureAtlas = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 1700, 1000);
+				this.getTextureManager(), 1800, 1100);
 		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
 				this.getTextureManager(), 2600, 2200);
 		mBitmapTextureAtlas3 = new BuildableBitmapTextureAtlas(
@@ -200,7 +213,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mDusterTextureRegion = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
-						"star.png");
+						"duster.png");
+		
+		mAnimatedBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.getTextureManager(), 2000, 267, TextureOptions.NEAREST);
+		mMonkeyTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+				createTiledFromAsset(this.mAnimatedBitmapTextureAtlas, this, "sp1.png", 10, 1);
+		
+		try 
+		{
+			this.mAnimatedBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+			this.mAnimatedBitmapTextureAtlas.load();
+		} 
+		catch (TextureAtlasBuilderException e) 
+		{
+			Debug.e(e);
+		}
 		
 		mBitmapTextureAtlas2.load();
 		
@@ -267,35 +294,43 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				getVertexBufferObjectManager());
 		mScene.attachChild(moOutLine);
 		
-		duster = new Duster(CAMERA_WIDTH/2+100, 200, mDusterTextureRegion, vertexBufferObjectManager);
+		monkeyTutorial = new MonkeyTutorial(100, -400, mMonkeyTextureRegion,
+				getVertexBufferObjectManager());
+		monkeyTutorial.animate(new long[]{100, 100, 100, 100, 100, 100, 100, 100, 100, 100}, 0, 9, true);
+		mScene.registerTouchArea(monkeyTutorial);
+		mScene.attachChild(monkeyTutorial);
+		
+		MonkeyTutorial.monkeyTutorialstart();
+		
+		duster = new Duster(CAMERA_WIDTH/2+100, -400, mDusterTextureRegion, vertexBufferObjectManager);
+		duster.setScale((float) 0.5);
+		mScene.registerTouchArea(duster);
 		mScene.attachChild(duster);
 		
-		tutorial = new Sprite(moOutLineX + 440, moOutLineY, mTutorialTextureRegion,
-				getVertexBufferObjectManager())
-		{ 
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
-			{
-				switch (pSceneTouchEvent.getAction() ) 
-				{ 
-				case TouchEvent.ACTION_DOWN :
-					if(animStart == 0 && drawingDisabler == 0)
-					{
-						AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
-								MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
-					}
-				break;
-				case TouchEvent.ACTION_UP:
-					
-				break;
-				}
-
-				return true;
-			}
-	
-		};
-		mScene.registerTouchArea(tutorial);
-		mScene.attachChild(tutorial);
+		//Duster.createDusterPopUp(0);
+		
+//		tutorial = new Sprite(moOutLineX + 440, moOutLineY, mTutorialTextureRegion,
+//				getVertexBufferObjectManager())
+//		{ 
+//			@Override
+//			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
+//			{
+//				switch (pSceneTouchEvent.getAction() ) 
+//				{ 
+//				case TouchEvent.ACTION_DOWN :
+//					
+//				break;
+//				case TouchEvent.ACTION_UP:
+//					
+//				break;
+//				}
+//
+//				return true;
+//			}
+//	
+//		};
+//		mScene.registerTouchArea(tutorial);
+//		mScene.attachChild(tutorial);
 		
 		reveal = false;
 		thick = 3;
@@ -313,21 +348,21 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		MainActivity.mScene.attachChild(MainActivity.pieceChalk);
 		pieceChalk.setScale((float) 0.7);
 		
-		mScene.registerUpdateHandler(new TimerHandler((float)3, new ITimerCallback() 
-		{
-			
-			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) 
-			{
-				// TODO Auto-generated method stub
-				if(animStart == 0 && drawingDisabler == 0)
-				{
-					
-					AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
-							MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
-				}
-			}
-		}));
+//		mScene.registerUpdateHandler(new TimerHandler((float)3, new ITimerCallback() 
+//		{
+//			
+//			@Override
+//			public void onTimePassed(TimerHandler pTimerHandler) 
+//			{
+//				// TODO Auto-generated method stub
+//				if(animStart == 0 && drawingDisabler == 0)
+//				{
+//					//animStart = 1;
+//					AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+//							MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
+//				}
+//			} 
+//		}));
 		
 		timer1 = new TimerHandler((float) 1.0f/120,true, new ITimerCallback() 
 		{
@@ -336,7 +371,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			{
 				// TODO Auto-generated method stub 
 				
-				if(animStart == 1)
+				if(animStart == 1 )
 				{
 					MainActivity.DrawImage2(MainActivity.pieceChalk.getX()+20 , MainActivity.pieceChalk.getY() + 50);
 				}
@@ -516,6 +551,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	{ 
 		// TODO Auto-generated method stub
 		counter++;
+		if(counter >600)
+		{
+			animStart = 0;
+			counter=0;
+		}
 		Debug.d("counter:"+counter);
 		tutorialWhiteChalk[counter] = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
 				MainActivity.vertexBufferObjectManager); 
@@ -569,7 +609,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static class setTexture
 	{
 		public setTexture(String address)
-		{
+		{ 
 			//this.mDrawnPictureRegion = textureRegion;
 			source = new BitmapTextureAtlasSource(
 					BitmapFactory.decodeFile(address));

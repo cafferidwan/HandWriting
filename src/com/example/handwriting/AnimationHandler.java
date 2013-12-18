@@ -1,7 +1,5 @@
 package com.example.handwriting;
 
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
@@ -126,7 +124,7 @@ public class AnimationHandler
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) 
 			{
 				//Debug.d("onPathStarted"); 
-				MainActivity.animStart = 1;
+				//MainActivity.animStart = 1;
 			}
 
 			@Override
@@ -157,12 +155,18 @@ public class AnimationHandler
 //						
 //					}
 //				}));
-				
-				for(int i=1; i<=MainActivity.counter; i++)
+				for(int j = 0; j<= MainActivity.counter; j++)
 				{
-					MainActivity.tutorialWhiteChalk[i].setVisible(false);
-					MainActivity.tutorialWhiteChalk[i].setX(MainActivity.CAMERA_WIDTH + 300);
+					if(MainActivity.tutorialWhiteChalk[j]!= null)
+					{
+						for(int i=1; i<=MainActivity.counter; i++)
+						{
+							MainActivity.tutorialWhiteChalk[i].setVisible(false);
+							MainActivity.tutorialWhiteChalk[i].setX(MainActivity.CAMERA_WIDTH + 300);
+						}
+					}
 				}
+				
 				MainActivity.counter = 0;
 				MainActivity.pieceChalk.setX(MainActivity.rectangle1[1].getX());
 			}
@@ -201,7 +205,7 @@ public class AnimationHandler
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) 
 			{ 
 				MainActivity.drawLine = 9;
-				MainActivity.animStart = 0;
+				//MainActivity.animStart = 0;
 				
 				
 //				for(int i=1; i<=MainActivity.counter; i++)
