@@ -59,19 +59,18 @@ public class Duster extends Sprite
 			MainActivity.dusterDisabler = 1;
 			MainActivity.duster.setY(-400);
 			
-			MainActivity.MainActivityInstace.finish();
-			MainActivity.MainActivityInstace.startActivity(new Intent(MainActivity.MainActivityInstace.getBaseContext(), MainActivity.class));
+			FinishActivity.finishDuster();
 		}
 		//Up to down
 		else if(upDown == 1) 
 		{ 
 			createPopUpPath = new Path(2)
-			.to(100, -400).to(MainActivity.CAMERA_WIDTH/2 + 50, 200);
+			.to(MainActivity.CAMERA_WIDTH/2+70, -400).to(MainActivity.CAMERA_WIDTH/2 + 50, 200);
 			MainActivity.dusterDisabler = 0;
 		
 		
 		
-		MainActivity.duster.registerEntityModifier(new PathModifier((float)3.3, createPopUpPath, null, new IPathModifierListener()
+		MainActivity.duster.registerEntityModifier(new PathModifier((float)4.0, createPopUpPath, null, new IPathModifierListener()
 		{
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) 

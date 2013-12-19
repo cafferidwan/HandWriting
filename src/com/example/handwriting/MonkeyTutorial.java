@@ -8,6 +8,7 @@ import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseBounceOut;
 
 public class MonkeyTutorial extends AnimatedSprite
@@ -77,8 +78,9 @@ public class MonkeyTutorial extends AnimatedSprite
 				MainActivity.audioPlay = true;
 				MainActivity.playAudio(R.raw.lettercompletesound);
 				
-				
-				if(MainActivity.animStart == 0 && MainActivity.drawingDisabler == 0)
+				MainActivity.tutorialCount++;
+				Debug.d("Tutorial count:"+MainActivity.tutorialCount);
+				if(MainActivity.animStart == 0 && MainActivity.drawingDisabler == 0 && MainActivity.tutorialCount == 1)
 				{
 					//animStart = 1;
 					AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
