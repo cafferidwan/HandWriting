@@ -80,9 +80,9 @@ public class PopUp extends Sprite
 		MainActivity.board.setScale((float) 0.6);
 		en.attachChild(MainActivity.board); 
 		
-		MainActivity.correctLetter = new Sprite(280, -140, MainActivity.mMoExampleTextureRegion,
+		MainActivity.correctLetter = new Sprite(340, -70, MainActivity.mMoOutLineTextureRegion,
 				MainActivity.vertexBufferObjectManager);
-		MainActivity.correctLetter.setScale((float) 0.4);
+		MainActivity.correctLetter.setScale((float) 0.6);
 		en.attachChild(MainActivity.correctLetter); 
 		
 		//If screen shot taken, then show screen shot image
@@ -92,6 +92,7 @@ public class PopUp extends Sprite
 					MainActivity.vertexBufferObjectManager);
 			MainActivity.board.setScale((float) 0.6);
 			en.attachChild(MainActivity.board); 
+			
 			MainActivity.drawnPicture = new Sprite(-40, -68, MainActivity.textureRegion,
 				MainActivity.vertexBufferObjectManager); 
 			MainActivity.drawnPicture.setScale((float) 0.6);

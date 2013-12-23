@@ -10,7 +10,6 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.ScreenCapture;
 import org.andengine.entity.util.ScreenCapture.IScreenCaptureCallback;
@@ -32,7 +31,8 @@ import org.andengine.util.FileUtils;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
-import android.R.anim;
+import StatusBarController.StatusBar;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.view.Display;
@@ -44,21 +44,26 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public Camera mCamera;   
 	public static Scene mScene;
 	public ScreenCapture screenCapture;
-	public static  BuildableBitmapTextureAtlas mBitmapTextureAtlas,
-			mBitmapTextureAtlas1, mBitmapTextureAtlas3;
-	public static ITextureRegion mBlackBoardTextureRegion,
+
+	public static ITextureRegion 
 			mMoOutLineTextureRegion, mPopUpBlackBoardTextureRegion,
 			mShowScreenCaptureRegion, mCreatePopUpRegion,
-			mCorrectLetterRegion, mDrawnPictureRegion,
-			mCrossRegion, mMoExampleTextureRegion;
-	public static ITextureRegion mSprite4TextureRegion, mStarTextureRegion, mTutorialTextureRegion;
+			mCorrectLetterRegion,
+			mCrossRegion;
+	public static ITextureRegion mWhiteChalkTextureRegion, mStarTextureRegion;
 	public static ITextureRegion mbackGroundTextureRegion, mDusterTextureRegion, 
 			mbackGround2TextureRegion, mSlidingScreenTextureRegion;
 	
 	private BuildableBitmapTextureAtlas mAnimatedBitmapTextureAtlas;
-	public TiledTextureRegion mMonkeyTextureRegion;
+	public TiledTextureRegion mMonkeyTextureRegion, mBlackBoardTextureRegion;
 	
-	public BitmapTextureAtlas mBitmapTextureAtlas2;
+	public static BitmapTextureAtlas mBitmapTextureAtlasPieceChalk, mBitmapTextureAtlasBlackBoard,
+									 mBitmapTextureAtlasMoOutLine, mBitmapTextureAtlasBackGround,
+									 mBitmapTextureAtlasWhiteChalk, mBitmapTextureAtlasStar,
+									 mBitmapTextureAtlasBookIcon, mBitmapTextureAtlasHandWirtingBook,
+									 mBitmapTextureAtlasBoard, mBitmapTextureAtlasHandCross, 
+									 mBitmapTextureAtlasDuster, mBitmapTextureAtlasMonkeyBrush;
+	
 	public static TiledTextureRegion mPieceChalkTextureRegion;
 
 	public static Sprite backGround, blackBoard, moOutLine, moExample, tutorial, slidingScreen;
@@ -148,77 +153,67 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		// TODO Auto-generated method stub
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("HandWritingGfx/");
-
-		mBitmapTextureAtlas = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 2000, 1300);
-		mBitmapTextureAtlas1 = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 2600, 2200);
-		mBitmapTextureAtlas3 = new BuildableBitmapTextureAtlas(
-				this.getTextureManager(), 2200, 1800);
-		mBitmapTextureAtlas2 = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
 		
-		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas, this, "JungleBG.png");
+		mBitmapTextureAtlasBackGround = new BitmapTextureAtlas(this.getTextureManager(), 1600, 864, TextureOptions.BILINEAR);
+		
+		mBitmapTextureAtlasPieceChalk = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
+		
+		mBitmapTextureAtlasBlackBoard = new BitmapTextureAtlas(this.getTextureManager(), 400, 400, TextureOptions.BILINEAR);
+		
+		mBitmapTextureAtlasMoOutLine = new BitmapTextureAtlas(this.getTextureManager(), 254, 262, TextureOptions.BILINEAR);
+		
+		mBitmapTextureAtlasWhiteChalk = new BitmapTextureAtlas(this.getTextureManager(), 50, 50, TextureOptions.BILINEAR);
+		 
+		mBitmapTextureAtlasStar = new BitmapTextureAtlas(this.getTextureManager(), 50, 50, TextureOptions.BILINEAR);
+		 
+		mBitmapTextureAtlasBookIcon = new BitmapTextureAtlas(this.getTextureManager(), 200, 200, TextureOptions.BILINEAR);
+		 
+		mBitmapTextureAtlasHandWirtingBook = new BitmapTextureAtlas(this.getTextureManager(), 1600, 800, TextureOptions.BILINEAR);
+		 
+		mBitmapTextureAtlasBoard = new BitmapTextureAtlas(this.getTextureManager(), 600, 600, TextureOptions.BILINEAR);
+		 
+		mBitmapTextureAtlasHandCross = new BitmapTextureAtlas(this.getTextureManager(), 200, 200, TextureOptions.BILINEAR);
+		
+		mBitmapTextureAtlasDuster = new BitmapTextureAtlas(this.getTextureManager(), 200, 200, TextureOptions.BILINEAR);
+		
+		mBitmapTextureAtlasMonkeyBrush = new BitmapTextureAtlas(this.getTextureManager(), 1000, 600, TextureOptions.BILINEAR);
 
-		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlas2, this,
+		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasPieceChalk, this,
 				"pieceChalk.png", 0, 0,  1, 1); 
 				
-		mPopUpBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"board.png");
+		mPopUpBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasBoard, this,
+				"board.png", 0, 0,  1, 1); 
+				
+		mbackGroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasBackGround, this,
+				"JungleBG.png", 0, 0,  1, 1); 
 		
-		mBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"blackboard.png");
-
-		mMoOutLineTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"moOutlineCrop.png");
-
-		mSprite4TextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"chalk2.png");
+		mBlackBoardTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasBlackBoard, this,
+				"blackboard.png", 0, 0,  1, 1); 
+				
+		mMoOutLineTextureRegion =  BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasMoOutLine, this,
+				"moOutlineCrop.png", 0, 0,  1, 1); 
+				
+		mWhiteChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasWhiteChalk, this,
+				"chalk2.png", 0, 0,  1, 1);
 		
-		mStarTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"star.png");
+		mStarTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasStar, this,
+				"star.png", 0, 0,  1, 1);
+				
+		mShowScreenCaptureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasBookIcon, this,
+				"bookIcon.png", 0, 0,  1, 1);
+				
+		mCreatePopUpRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasHandWirtingBook, this,
+				"handwritingbook.png", 0, 0,  1, 1);
+				
+		mCrossRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasHandCross, this,
+				"cross.png", 0, 0,  1, 1);
 		
-		mShowScreenCaptureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"bookIcon.png");
-		
-		mCreatePopUpRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"handwritingbook.png");
-		
-		mCorrectLetterRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"moOutlineCrop.png");
-		
-		mCrossRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"cross.png");
-		
-		mDrawnPictureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"moOutlineCrop.png");
-		
-		mMoExampleTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas1, this,
-						"moExample.png");
-		
-		mTutorialTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
-						"star.png");
-		
-		mDusterTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
-						"duster.png");
-		
-		mSlidingScreenTextureRegion = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(MainActivity.mBitmapTextureAtlas, this,
-						"monkeyBrush.png");
-		
+		mDusterTextureRegion =  BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasDuster, this,
+				"duster.png", 0, 0,  1, 1);
+				
+		mSlidingScreenTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasMonkeyBrush, this,
+				"monkeyBrush3.png", 0, 0,  1, 1);
+				
 		mAnimatedBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.getTextureManager(), 2000, 267, TextureOptions.NEAREST);
 		mMonkeyTextureRegion = BitmapTextureAtlasTextureRegionFactory.
 				createTiledFromAsset(this.mAnimatedBitmapTextureAtlas, this, "sp1.png", 10, 1);
@@ -233,40 +228,18 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			Debug.e(e);
 		}
 		
-		mBitmapTextureAtlas2.load();
-		
-		try 
-		{
-			mBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
-							0, 0, 0));
-			mBitmapTextureAtlas.load();
-		} 
-		catch (TextureAtlasBuilderException e)
-		{
-			Debug.e(e);
-		}
-		
-		try 
-		{
-			mBitmapTextureAtlas3.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
-							0, 0, 0));
-			mBitmapTextureAtlas3.load();
-		} 
-		catch (TextureAtlasBuilderException e)
-		{
-			Debug.e(e);
-		}
-		
-		try 
-		{
-			mBitmapTextureAtlas1.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource,
-					BitmapTextureAtlas>(0, 0, 0));
-			mBitmapTextureAtlas1.load();
-		} 
-		catch (TextureAtlasBuilderException e) 
-		{
-			Debug.e(e);
-		}
+		mBitmapTextureAtlasBackGround.load();
+		mBitmapTextureAtlasPieceChalk.load();
+		mBitmapTextureAtlasBlackBoard.load();
+		mBitmapTextureAtlasMoOutLine.load();
+		mBitmapTextureAtlasWhiteChalk.load();
+		mBitmapTextureAtlasStar.load();
+		mBitmapTextureAtlasBookIcon.load();
+		mBitmapTextureAtlasHandWirtingBook.load();
+		mBitmapTextureAtlasBoard.load();
+		mBitmapTextureAtlasHandCross.load();
+		mBitmapTextureAtlasDuster.load();
+		mBitmapTextureAtlasMonkeyBrush.load();
 	}
 
 	@Override
@@ -313,32 +286,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		//Duster.createDusterPopUp(0);
 		
-//		tutorial = new Sprite(moOutLineX + 440, moOutLineY, mTutorialTextureRegion,
-//				getVertexBufferObjectManager())
-//		{ 
-//			@Override
-//			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
-//			{
-//				switch (pSceneTouchEvent.getAction() ) 
-//				{ 
-//				case TouchEvent.ACTION_DOWN :
-//					
-//				break;
-//				case TouchEvent.ACTION_UP:
-//					
-//				break;
-//				}
-//
-//				return true;
-//			}
-//	
-//		};
-//		mScene.registerTouchArea(tutorial);
-//		mScene.attachChild(tutorial);
-		
 		reveal = false;
 		thick = 3;
 		width = moOutLine.getWidth()/10;
+		
+		//Hide status bar
+		//StatusBar.showStatusBar();
 		
 		//Draw Outline
 		DrawOutline.Draw();
@@ -395,6 +348,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				{
 					Stars.starCol(num);
 				}
+				
+//				if(slidingScreen != null && slidingScreen.getX()> CAMERA_WIDTH/2)
+//				{
+//					MainActivity.MainActivityInstace.finish();
+//					MainActivity.MainActivityInstace.startActivity(new Intent(MainActivity.MainActivityInstace.getBaseContext(),
+//							MainActivity.class));
+//				}
 			}
 		});
 		mScene.registerUpdateHandler(timer1);
@@ -445,7 +405,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			//For drawing white chalk
 			if(drawingDisabler == 0)
 			{
-			DrawImage(pSceneTouchEvent.getX() - 25, 
+				DrawImage(pSceneTouchEvent.getX() - 25, 
 					pSceneTouchEvent.getY() - 30); 
 			}
 			//For piece chalk to be dragged within letter mo range 
@@ -527,7 +487,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public void DrawImage(float x, float y)
 	{ 
 		// TODO Auto-generated method stub
-		whiteChalk = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
+		whiteChalk = new Sprite(x, y, MainActivity.mWhiteChalkTextureRegion,
 				MainActivity.vertexBufferObjectManager); 
 		//whiteChalk.setVisible(false);
 		mScene.attachChild(MainActivity.whiteChalk);
@@ -545,7 +505,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			counter=0;
 		}
 		//Debug.d("counter:"+counter);
-		tutorialWhiteChalk[counter] = new Sprite(x, y, MainActivity.mSprite4TextureRegion,
+		tutorialWhiteChalk[counter] = new Sprite(x, y, MainActivity.mWhiteChalkTextureRegion,
 				MainActivity.vertexBufferObjectManager); 
 		//Debug.d("counter:"+counter);
 		//whiteChalk.setVisible(false);
@@ -608,11 +568,17 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		}
 		
 	}
+//	@Override
+//	public void onStop()
+//	{
+//		super.onStop();
+//		mScene.clearUpdateHandlers();
+//	}
 	
-	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		
-	}
+//	@Override
+//	public void onDestroy()
+//	{
+//		super.onDestroy();
+//		//mScene.clearUpdateHandlers();
+//	}
 }

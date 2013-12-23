@@ -14,8 +14,6 @@ import org.andengine.util.modifier.ease.EaseBounceOut;
 public class MonkeyTutorial extends AnimatedSprite
 {
 
-	
-
 	public MonkeyTutorial(float pX, float pY, ITiledTextureRegion pTiledTextureRegion,
 			VertexBufferObjectManager pTiledSpriteVertexBufferObject) 
 	{
@@ -23,6 +21,7 @@ public class MonkeyTutorial extends AnimatedSprite
 		// TODO Auto-generated constructor stub
 		
 	}
+	
 	@Override
 	public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
 	{

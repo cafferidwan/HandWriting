@@ -68,8 +68,6 @@ public class Duster extends Sprite
 			.to(MainActivity.CAMERA_WIDTH/2+70, -400).to(MainActivity.CAMERA_WIDTH/2 + 50, 200);
 			MainActivity.dusterDisabler = 0;
 		
-		
-		
 		MainActivity.duster.registerEntityModifier(new PathModifier((float)4.0, createPopUpPath, null, new IPathModifierListener()
 		{
 			@Override
