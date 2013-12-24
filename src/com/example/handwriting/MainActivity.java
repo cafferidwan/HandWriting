@@ -30,9 +30,6 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.FileUtils;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
-
-import StatusBarController.StatusBar;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.view.Display;
@@ -154,6 +151,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("HandWritingGfx/");
 		
+		//Loading bitmaps
 		mBitmapTextureAtlasBackGround = new BitmapTextureAtlas(this.getTextureManager(), 1600, 864, TextureOptions.BILINEAR);
 		
 		mBitmapTextureAtlasPieceChalk = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
@@ -178,6 +176,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mBitmapTextureAtlasMonkeyBrush = new BitmapTextureAtlas(this.getTextureManager(), 1000, 600, TextureOptions.BILINEAR);
 
+		//Loading texture region
 		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasPieceChalk, this,
 				"pieceChalk.png", 0, 0,  1, 1); 
 				
@@ -349,12 +348,6 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 					Stars.starCol(num);
 				}
 				
-//				if(slidingScreen != null && slidingScreen.getX()> CAMERA_WIDTH/2)
-//				{
-//					MainActivity.MainActivityInstace.finish();
-//					MainActivity.MainActivityInstace.startActivity(new Intent(MainActivity.MainActivityInstace.getBaseContext(),
-//							MainActivity.class));
-//				}
 			}
 		});
 		mScene.registerUpdateHandler(timer1);
@@ -452,6 +445,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						screenShot();
 					}
 				}));
+			}
+			if(Flag1[39] == 1)
+			{
+				MainActivity.audioPlay = true;
+				MainActivity.playAudio(R.raw.lettercompletesound);
+				
+				Duster.createDusterPopUp(1);
 			}
 			
 			return true;  

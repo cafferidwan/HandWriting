@@ -1,5 +1,7 @@
 package com.example.handwriting;
 
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
@@ -30,10 +32,8 @@ public class Duster extends Sprite
 		{
 		case TouchEvent.ACTION_DOWN:
 
-//			if(MainActivity.drawingDisabler == 0 && MainActivity.animStart == 0)
-//			{
-				createDusterPopUp(0);
-//			}
+			createDusterPopUp(0);
+			
 		break;
 		
 		case TouchEvent.ACTION_UP:
@@ -53,13 +53,10 @@ public class Duster extends Sprite
 		//Down to up
 		if(upDown == 0)
 		{
-//			createPopUpPath = new Path(2)
-//			.to(MainActivity.CAMERA_WIDTH/2 + 50, 200).to(100, -400);
-			
 			MainActivity.dusterDisabler = 1;
 			MainActivity.duster.setY(-400);
 			
-			FinishActivity.finishDuster();
+			finishDuster();
 		}
 		//Up to down
 		else if(upDown == 1) 
@@ -97,4 +94,58 @@ public class Duster extends Sprite
 		}
 	}
 
+	public static void finishDuster() 
+	{
+
+		MainActivity.slidingScreen = new Sprite(0, -800, MainActivity.mSlidingScreenTextureRegion, MainActivity.vertexBufferObjectManager);
+		MainActivity.mScene.attachChild(MainActivity.slidingScreen);
+		
+		Path finishingPath = new Path(2).to(-1200, 0).to(MainActivity.CAMERA_WIDTH  + 100, 0);
+
+		MainActivity.slidingScreen.registerEntityModifier(new PathModifier((float) 1.8, finishingPath, null, new IPathModifierListener()
+				{
+					@Override
+					public void onPathStarted(final PathModifier pPathModifier,final IEntity pEntity) 
+					{
+						//Restarting the activity
+						MainActivity.mScene.registerUpdateHandler(new TimerHandler((float)0.8, new ITimerCallback() {
+							
+							@Override
+							public void onTimePassed(TimerHandler pTimerHandler)
+							{
+								// TODO Auto-generated method stub
+								MainActivity.mScene.unregisterUpdateHandler(MainActivity.timer1);
+								MainActivity.mScene.detachSelf();
+								
+								//Resetting the stars
+								MainActivity.aCounter=0;
+								MainActivity.star[17].setVisible(false);
+								MainActivity.num = 0;			
+								
+								MainActivity.MainActivityInstace.finish();
+								MainActivity.MainActivityInstace.startActivity(new Intent(MainActivity.MainActivityInstace.getBaseContext(),
+										MainActivity.class));
+							}
+						}));
+					}
+ 
+					@Override
+					public void onPathWaypointStarted(final PathModifier pPathModifier,final IEntity pEntity, final int pWaypointIndex) 
+					{
+						
+					}
+
+					@Override
+					public void onPathWaypointFinished(final PathModifier pPathModifier,final IEntity pEntity, final int pWaypointIndex) 
+					{
+
+					}
+
+					@Override
+					public void onPathFinished(final PathModifier pPathModifier,final IEntity pEntity)
+					{
+						
+					}
+				}));
+	}
 }

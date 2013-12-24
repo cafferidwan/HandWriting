@@ -104,12 +104,7 @@ public class Stars
 			MainActivity.aCounter=0;
 			MainActivity.star[17].setVisible(false);
 			n = 0;
-			MainActivity.num = 0;
-			//play the sound
-			MainActivity.audioPlay = true;
-			MainActivity.playAudio(R.raw.lettercompletesound);
-			
-			Duster.createDusterPopUp(1);
+			MainActivity.num = 0;			
 			
 		}
 		else
