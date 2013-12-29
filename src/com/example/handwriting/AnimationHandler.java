@@ -112,13 +112,13 @@ public class AnimationHandler
 		Path chalkPath = null;
 		
 		chalkPath = new Path(16)
-		.to(x1 - 50, y1 - 90).to(x2 - 50, y2 - 90).to(x3 - 50, y3 - 90).to(x4 - 50, y4 - 90)
-		.to(x5 - 50, y5 - 90).to(x6 - 50, y6 - 90).to(x7 - 50, y7 - 90).to(x8 - 50, y8 - 90)
-		.to(x9 - 50, y9 - 90).to(x10 - 50, y10 - 90).to(x11 - 50, y11 - 90).to(x12 - 50, y12 - 90)
-		.to(x13 - 50, y13 - 90).to(x14 - 50, y14 - 90).to(x15 - 50, y15 - 90).to(x16 - 50, y16 - 90)
+		.to(x1 - 50, y1 - 20).to(x2 - 50, y2 - 20).to(x3 - 50, y3 - 20).to(x4 - 50, y4 - 20)
+		.to(x5 - 50, y5 - 20).to(x6 - 50, y6 - 20).to(x7 - 50, y7 - 20).to(x8 - 50, y8 - 20)
+		.to(x9 - 50, y9 - 20).to(x10 - 50, y10 - 20).to(x11 - 50, y11 - 20).to(x12 - 50, y12 - 20)
+		.to(x13 - 50, y13 - 20).to(x14 - 50, y14 - 20).to(x15 - 50, y15 - 20).to(x16 - 50, y16 - 20)
 		;
 		
-		MainActivity.pieceChalk.registerEntityModifier(new PathModifier((float)3.5, chalkPath, null, new IPathModifierListener()
+		MainActivity.handTutorial.registerEntityModifier(new PathModifier((float)3.5, chalkPath, null, new IPathModifierListener()
 		{
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) 
@@ -145,6 +145,8 @@ public class AnimationHandler
 				MainActivity.drawLine = 9;
 				MainActivity.animStart = 0;
 				
+				MainActivity.handTutorial.setVisible(false);
+				
 //				MainActivity.mScene.registerUpdateHandler(new TimerHandler((float)3, new ITimerCallback() 
 //				{
 //					
@@ -168,7 +170,7 @@ public class AnimationHandler
 				}
 				
 				MainActivity.counter = 0;
-				MainActivity.pieceChalk.setX(MainActivity.rectangle1[1].getX());
+				MainActivity.handTutorial.setX(MainActivity.rectangle1[1].getX());
 			}
 		}));
 	}
@@ -178,9 +180,11 @@ public class AnimationHandler
 		Path chalkPath = null;
 		
 		chalkPath = new Path(2)
-		.to(x1 - 50, y1 - 90).to(x2 - 50, y2 - 90);
+		.to(x1 - 50, y1 - 20).to(x2 - 50, y2 - 20);
 		
-		MainActivity.pieceChalk.registerEntityModifier(new PathModifier((float)1.0, chalkPath, null, new IPathModifierListener()
+		MainActivity.handTutorial.setVisible(true);
+		
+		MainActivity.handTutorial.registerEntityModifier(new PathModifier((float)1.0, chalkPath, null, new IPathModifierListener()
 		{
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) 
@@ -214,7 +218,7 @@ public class AnimationHandler
 //					MainActivity.tutorialWhiteChalk[i].setX(MainActivity.CAMERA_WIDTH + 300);
 //				}
 //				MainActivity.counter = 0;
-//				MainActivity.pieceChalk.setX(MainActivity.rectangle1[1].getX());
+//				MainActivity.handTutorial.setX(MainActivity.rectangle1[1].getX());
 				
 				AnimationHandler.animatedChalk(
 						MainActivity.rectangle1[9].getX(), MainActivity.rectangle1[9].getY()+20, 

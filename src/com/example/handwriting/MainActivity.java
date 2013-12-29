@@ -45,7 +45,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static ITextureRegion 
 			mMoOutLineTextureRegion, mPopUpBlackBoardTextureRegion,
 			mShowScreenCaptureRegion, mCreatePopUpRegion,
-			mCorrectLetterRegion,
+			mCorrectLetterRegion, mHandTutorialTextureRegion,
 			mCrossRegion;
 	public static ITextureRegion mWhiteChalkTextureRegion, mStarTextureRegion;
 	public static ITextureRegion mbackGroundTextureRegion, mDusterTextureRegion, 
@@ -59,11 +59,13 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 									 mBitmapTextureAtlasWhiteChalk, mBitmapTextureAtlasStar,
 									 mBitmapTextureAtlasBookIcon, mBitmapTextureAtlasHandWirtingBook,
 									 mBitmapTextureAtlasBoard, mBitmapTextureAtlasHandCross, 
-									 mBitmapTextureAtlasDuster, mBitmapTextureAtlasMonkeyBrush;
+									 mBitmapTextureAtlasDuster, mBitmapTextureAtlasMonkeyBrush,
+									 mBitmapTextureAtlasHandTutorial;
 	
 	public static TiledTextureRegion mPieceChalkTextureRegion;
 
-	public static Sprite backGround, blackBoard, moOutLine, moExample, tutorial, slidingScreen;
+	public static Sprite backGround, blackBoard, moOutLine, moExample, tutorial, slidingScreen,
+						 handTutorial;
 	public static Sprite whiteChalk, createPopUp, correctLetter, drawnPicture, cross, board;
 	public static PopUp showScreen;
 	public static Chalk pieceChalk; 
@@ -174,7 +176,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		mBitmapTextureAtlasDuster = new BitmapTextureAtlas(this.getTextureManager(), 200, 200, TextureOptions.BILINEAR);
 		
-		mBitmapTextureAtlasMonkeyBrush = new BitmapTextureAtlas(this.getTextureManager(), 1000, 600, TextureOptions.BILINEAR);
+		mBitmapTextureAtlasMonkeyBrush = new BitmapTextureAtlas(this.getTextureManager(), 1300, 600, TextureOptions.BILINEAR);
+
+		mBitmapTextureAtlasHandTutorial = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
 
 		//Loading texture region
 		mPieceChalkTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasPieceChalk, this,
@@ -212,6 +216,9 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				
 		mSlidingScreenTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasMonkeyBrush, this,
 				"monkeyBrush3.png", 0, 0,  1, 1);
+		
+		mHandTutorialTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBitmapTextureAtlasHandTutorial, this,
+				"hand.png", 0, 0,  1, 1);
 				
 		mAnimatedBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.getTextureManager(), 2000, 267, TextureOptions.NEAREST);
 		mMonkeyTextureRegion = BitmapTextureAtlasTextureRegionFactory.
@@ -239,6 +246,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mBitmapTextureAtlasHandCross.load();
 		mBitmapTextureAtlasDuster.load();
 		mBitmapTextureAtlasMonkeyBrush.load();
+		mBitmapTextureAtlasHandTutorial.load();
 	}
 
 	@Override
@@ -278,6 +286,11 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		
 		MonkeyTutorial.monkeyTutorialstart();
 		
+		handTutorial = new Sprite(100, 100, mHandTutorialTextureRegion, getVertexBufferObjectManager());
+		handTutorial.setVisible(false);
+		handTutorial.setScale((float)0.7);
+		mScene.attachChild(handTutorial);
+		
 		duster = new Duster(CAMERA_WIDTH/2+100, -400, mDusterTextureRegion, vertexBufferObjectManager);
 		duster.setScale((float) 0.5);
 		mScene.registerTouchArea(duster);
@@ -313,7 +326,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				
 				if(animStart == 1 )
 				{
-					MainActivity.DrawImage2(MainActivity.pieceChalk.getX()+20 , MainActivity.pieceChalk.getY() + 50);
+					MainActivity.DrawImage2(MainActivity.handTutorial.getX()+20 , MainActivity.handTutorial.getY() -20);
 				}
 				
 //				if(tutorialWhiteChalk!= null && AnimationHandler.j == 0) 
@@ -518,6 +531,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		final int viewWidth = MainActivity.this.mRenderSurfaceView.getWidth() - 525;
 		final int viewHeight = MainActivity.this.mRenderSurfaceView.getHeight() - 165;
 		
+		pieceChalk.setVisible(false);
 		//final float time = System.currentTimeMillis();
 		screenCapture.capture(264, 80, viewWidth, viewHeight,FileUtils.getAbsolutePathOnInternalStorage
 				(getApplicationContext(), "/screen"+".jpg") , new IScreenCaptureCallback() 
@@ -534,7 +548,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 						changeTexture = 1;
 						new setTexture(FileUtils.getAbsolutePathOnInternalStorage
 								(getApplicationContext(), "/screen"+".jpg"));
-					}
+					} 
 				});
 			}
 

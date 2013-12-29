@@ -31,7 +31,7 @@ public class Duster extends Sprite
 		switch (pSceneTouchEvent.getAction()) 
 		{
 		case TouchEvent.ACTION_DOWN:
-
+ 
 			createDusterPopUp(0);
 			
 		break;
@@ -62,7 +62,7 @@ public class Duster extends Sprite
 		else if(upDown == 1) 
 		{ 
 			createPopUpPath = new Path(2)
-			.to(MainActivity.CAMERA_WIDTH/2+70, -400).to(MainActivity.CAMERA_WIDTH/2 + 50, 200);
+			.to(MainActivity.CAMERA_WIDTH/2+70, -400).to(MainActivity.CAMERA_WIDTH/2 + 100, 200);
 			MainActivity.dusterDisabler = 0;
 		
 		MainActivity.duster.registerEntityModifier(new PathModifier((float)4.0, createPopUpPath, null, new IPathModifierListener()
@@ -108,13 +108,12 @@ public class Duster extends Sprite
 					public void onPathStarted(final PathModifier pPathModifier,final IEntity pEntity) 
 					{
 						//Restarting the activity
-						MainActivity.mScene.registerUpdateHandler(new TimerHandler((float)0.8, new ITimerCallback() {
+						MainActivity.mScene.registerUpdateHandler(new TimerHandler((float)1, new ITimerCallback() {
 							
 							@Override
 							public void onTimePassed(TimerHandler pTimerHandler)
 							{
 								// TODO Auto-generated method stub
-								MainActivity.mScene.unregisterUpdateHandler(MainActivity.timer1);
 								MainActivity.mScene.detachSelf();
 								
 								//Resetting the stars
@@ -122,6 +121,7 @@ public class Duster extends Sprite
 								MainActivity.star[17].setVisible(false);
 								MainActivity.num = 0;			
 								
+								MainActivity.mScene.unregisterUpdateHandler(MainActivity.timer1);
 								MainActivity.MainActivityInstace.finish();
 								MainActivity.MainActivityInstace.startActivity(new Intent(MainActivity.MainActivityInstace.getBaseContext(),
 										MainActivity.class));
