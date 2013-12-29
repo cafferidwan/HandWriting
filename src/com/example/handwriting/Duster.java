@@ -94,13 +94,14 @@ public class Duster extends Sprite
 		}
 	}
 
+	//Sliding screen
 	public static void finishDuster() 
 	{
 
 		MainActivity.slidingScreen = new Sprite(0, -800, MainActivity.mSlidingScreenTextureRegion, MainActivity.vertexBufferObjectManager);
 		MainActivity.mScene.attachChild(MainActivity.slidingScreen);
 		
-		Path finishingPath = new Path(2).to(-1200, 0).to(MainActivity.CAMERA_WIDTH  + 100, 0);
+		Path finishingPath = new Path(2).to(-1200, 0).to(MainActivity.CAMERA_WIDTH  + 20, 0);
 
 		MainActivity.slidingScreen.registerEntityModifier(new PathModifier((float) 1.8, finishingPath, null, new IPathModifierListener()
 				{
@@ -114,6 +115,7 @@ public class Duster extends Sprite
 							public void onTimePassed(TimerHandler pTimerHandler)
 							{
 								// TODO Auto-generated method stub
+								MainActivity.mScene.detachChild(MainActivity.pieceChalk);
 								MainActivity.mScene.detachSelf();
 								
 								//Resetting the stars
