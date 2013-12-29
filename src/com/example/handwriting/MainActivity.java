@@ -104,7 +104,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	static int changeTexture = 0;
 	
 	//Stars variables
-	static int num = 0, aCounter = 0;
+	public static int num = 0, aCounter = 0;
 	//Tutorial variables
 	static int animStart = 0, counter = 0;
 	
@@ -115,7 +115,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static int popUpDuster = 0, dusterDisabler = 0;
 	
 	//Tutorial Count
-	public static int tutorialCount ;
+	public static int tutorialCount;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 
@@ -256,6 +256,10 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mScene = new Scene();
 		mScene.setBackground(new Background(Color.WHITE));
 	
+		//Re creating the stars
+		num = 0;
+		aCounter = 0;
+		
 		vertexBufferObjectManager = getVertexBufferObjectManager();
 
 		backGround = new Sprite(0, 0, mbackGroundTextureRegion,

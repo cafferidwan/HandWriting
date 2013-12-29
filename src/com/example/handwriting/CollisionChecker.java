@@ -5,7 +5,7 @@ import android.content.Intent;
 public class CollisionChecker 
 {
 	
-	static int val ;
+	static int val  ;
 	
 	public static void collisionCheck(float a, float b)
 	{
