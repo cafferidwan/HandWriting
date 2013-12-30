@@ -1,5 +1,7 @@
 package com.example.handwriting;
 
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.PathModifier;
 import org.andengine.entity.modifier.PathModifier.IPathModifierListener;
@@ -73,17 +75,27 @@ public class MonkeyTutorial extends AnimatedSprite
 			@Override
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) 
 			{ 
-				//play the sound
-				MainActivity.audioPlay = true;
-				MainActivity.playAudio(R.raw.lettercompletesound);
-				
 				MainActivity.tutorialCount++;
 				Debug.d("Tutorial count:"+MainActivity.tutorialCount);
 				if(MainActivity.animStart == 0 && MainActivity.drawingDisabler == 0 && MainActivity.tutorialCount == 1)
 				{
 					//animStart = 1;
-					AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
-					MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
+					
+					//play the sound
+					MainActivity.audioPlay = true;
+					MainActivity.playAudio(R.raw.one);
+					//play the animation after delay
+					MainActivity.mScene.registerUpdateHandler(new TimerHandler(6, new ITimerCallback() {
+						
+						@Override
+						public void onTimePassed(TimerHandler pTimerHandler) 
+						{
+							// TODO Auto-generated method stub
+							AnimationHandler.animatedChalk1(MainActivity.rectangle1[1].getX(), MainActivity.rectangle1[1].getY()+20, 
+									MainActivity.rectangle1[8].getX()+20, MainActivity.rectangle1[8].getY()+20);
+						}
+					}));
+					
 				}
 			}
 		} , EaseBounceOut.getInstance()));

@@ -145,18 +145,17 @@ public class AnimationHandler
 				MainActivity.drawLine = 9;
 				MainActivity.animStart = 0;
 				
+				MainActivity.soundPlayCount++;
+				if(MainActivity.soundPlayCount == 1)
+				{
+					//play the sound
+					MainActivity.soundPlayCount++;
+					MainActivity.audioPlay = true;
+					MainActivity.playAudio(R.raw.two);
+				}
+				
 				MainActivity.handTutorial.setVisible(false);
 				
-//				MainActivity.mScene.registerUpdateHandler(new TimerHandler((float)3, new ITimerCallback() 
-//				{
-//					
-//					@Override
-//					public void onTimePassed(TimerHandler pTimerHandler) 
-//					{
-//						// TODO Auto-generated method stub
-//						
-//					}
-//				}));
 				for(int j = 0; j<= MainActivity.counter; j++)
 				{
 					if(MainActivity.tutorialWhiteChalk[j]!= null)

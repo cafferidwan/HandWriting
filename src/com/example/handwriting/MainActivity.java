@@ -115,7 +115,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public static int popUpDuster = 0, dusterDisabler = 0;
 	
 	//Tutorial Count
-	public static int tutorialCount;
+	public static int tutorialCount, soundPlayCount;
 	
 	@Override
 	public EngineOptions onCreateEngineOptions() 

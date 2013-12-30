@@ -9,6 +9,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseBounceOut;
 
 public class PopUp extends Sprite
@@ -48,6 +49,7 @@ public class PopUp extends Sprite
 
 	public static void createPopUp(int upDown)
 	{
+
 		MainActivity.popUpVal = upDown;
 		Path createPopUpPath = null;
 		
@@ -156,7 +158,22 @@ public class PopUp extends Sprite
 			@Override
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) 
 			{ 
-				//drawingDisabler = 0;
+				//play the sound for first time only
+				if(MainActivity.soundPlayCount == 3)
+				{
+					MainActivity.soundPlayCount++;
+					//play the sound
+					MainActivity.audioPlay = true;
+					MainActivity.playAudio(R.raw.four);
+				}
+				else if(MainActivity.soundPlayCount == 4)
+				{
+					MainActivity.soundPlayCount++;
+					//play the sound
+					MainActivity.audioPlay = true;
+					MainActivity.playAudio(R.raw.five);
+				}
+				
 			}
 		} , EaseBounceOut.getInstance()));
 	}

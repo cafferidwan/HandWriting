@@ -10,6 +10,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseBounceOut;
 
 import android.content.Intent;
@@ -88,7 +89,15 @@ public class Duster extends Sprite
 			@Override
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) 
 			{ 
-				//drawingDisabler = 0;
+				//play the sound for first time only
+				Debug.d("sound:"+MainActivity.soundPlayCount);
+				if(MainActivity.soundPlayCount == 2)
+				{
+					MainActivity.soundPlayCount++;
+					//play the sound
+					MainActivity.audioPlay = true;
+					MainActivity.playAudio(R.raw.three);
+				}
 			}
 		} , EaseBounceOut.getInstance()));
 		}
