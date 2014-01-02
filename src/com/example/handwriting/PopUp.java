@@ -9,7 +9,6 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.debug.Debug;
 import org.andengine.util.modifier.ease.EaseBounceOut;
 
 public class PopUp extends Sprite
@@ -32,10 +31,12 @@ public class PopUp extends Sprite
 			{
 			case TouchEvent.ACTION_DOWN:
 
-				if(MainActivity.drawingDisabler == 0 && MainActivity.animStart == 0)
-				{
+				if(MainActivity.drawingDisabler == 0 && MainActivity.animStart == 0 
+				&& !MainActivity.mediaPlayer.isPlaying())
+				{ 
 					createPopUp(0);
 				}
+				
 			break;
 			
 			case TouchEvent.ACTION_UP:
@@ -62,10 +63,9 @@ public class PopUp extends Sprite
 			createPopUpPath = new Path(2)
 			.to(100, MainActivity.CAMERA_HEIGHT+500).to(100, 100);
 			MainActivity.drawingDisabler = 1;
-
 		}
 		//Up to down
-		else if(upDown == 1) 
+		else if(upDown == 1)
 		{ 
 			createPopUpPath = new Path(2)
 			.to(100, 100).to(100, MainActivity.CAMERA_HEIGHT+500);

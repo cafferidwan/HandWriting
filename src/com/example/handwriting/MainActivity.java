@@ -106,7 +106,7 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	//Stars variables
 	public static int num = 0, aCounter = 0;
 	//Tutorial variables
-	static int animStart = 0, counter = 0;
+	static int animStart = 0 , counter = 0 ;
 	
 	//Popup window variables
 	public static int popUpVal = 0, drawingDisabler = 0;
@@ -256,9 +256,26 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 		mScene = new Scene();
 		mScene.setBackground(new Background(Color.WHITE));
 	
-		//Re creating the stars
+		//Re-creating the stars
 		num = 0;
 		aCounter = 0;
+		
+		//Setting animation counter 
+		animStart = 0;
+		counter = 0;
+		
+		//pop up value disabler
+		popUpVal = 0;
+		drawingDisabler = 0;
+		
+		//pop up duster
+		popUpDuster = 0;
+		dusterDisabler = 0;
+		
+//		for(int j=0; j<=39; j++)
+//		{
+//			Flag1[j] = 0;
+//		}
 		
 		vertexBufferObjectManager = getVertexBufferObjectManager();
 
@@ -337,12 +354,12 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 //				{
 //					mScene.detachChild(tutorialWhiteChalk);
 //					//tutorialWhiteChalk.setVisible(false);
-//				}
+//				} 
 				
-				if(!(pieceChalk.getX()>=0))
+				if(!(pieceChalk.getX()>=0) && Flag1[38] == 0)  
 				{
 					Debug.d("chalk create");
-					MainActivity.pieceChalk = new Chalk(MainActivity.moOutLineX -10, MainActivity.moOutLineY -80,
+					pieceChalk = new Chalk(MainActivity.moOutLineX -10, MainActivity.moOutLineY -80,
 							MainActivity.mPieceChalkTextureRegion, MainActivity.MainActivityInstace.getVertexBufferObjectManager());
 					MainActivity.mScene.attachChild(MainActivity.pieceChalk);
 					pieceChalk.setScale((float) 0.7);
@@ -445,8 +462,8 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 				
 				mScene.detachChild(star[1]); 
 				MainActivity.star[1].setPosition(MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT);
-				num=1; 
-			} 
+				num=1;
+			}
 			//Checking for the screenshot
 			if(Flag1[38]== 1)
 			{
@@ -465,10 +482,15 @@ public class MainActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			}
 			if(Flag1[39] == 1)
 			{
+				for(int j=1; j<18; j++)
+				{
+					star[j].setY(CAMERA_WIDTH+CAMERA_WIDTH); 
+				}
 				MainActivity.audioPlay = true;
 				MainActivity.playAudio(R.raw.lettercompletesound);
 				
 				Duster.createDusterPopUp(1);
+				Flag1[39] = 0;
 			}
 			
 			return true;  
